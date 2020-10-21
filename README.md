@@ -1,2 +1,2 @@
 # convstacks
-a library of stacking convolutions in pytorch
+a library for stacking convolutions in pytorch
