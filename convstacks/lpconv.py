@@ -38,5 +38,3 @@ class LpConv(torch.nn.Conv1d):
                      value=0)
         return super(LpConv, self).forward(lp_x)
 
-
-
