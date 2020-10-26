@@ -1,4 +1,5 @@
 # stack.py
+from enum import Enum
 from lpconv import LpConv
 import torch
 
@@ -37,13 +38,26 @@ def analyze_stack(stack):
     print(f'stack with effective kernel length of {effective_kernel_length}')
 
 
-def train_stack(stack, data):
+class Losses(Enum):
 
-    def loss_fn(output, input, k):
-        modified_out = output[:, :, k - 1:-1]
-        modified_in = input[:, :, k:]
-        return torch.nn.MSELoss()(modified_out,
-                                  modified_in)
+    mse = 1
+    softmax = 2
+
+
+def mse_loss_fn(output, input, k):
+
+    modified_out = output[:, :, k - 1:-1]
+    modified_in = input[:, :, k:]
+    return torch.nn.MSELoss()(modified_out,
+                              modified_in)
+
+
+def softmax_loss_fn(output, input, k):
+    # per element softmax
+    pass
+
+
+def train_stack(stack, data, loss_type: Losses = Losses.mse):
 
     def make_batched(data, batch_size):
         batched = []
@@ -63,6 +77,11 @@ def train_stack(stack, data):
     batched = make_batched(data, batch_size)
     n_batches = batched.shape[1]
     k = 2  # effective kernel length
+
+    if loss_type == Losses.mse:
+        loss_fn = mse_loss_fn
+    else:
+        loss_fn = softmax_loss_fn
 
     for epoch in range(n_epochs):
         epoch_loss = 0.
