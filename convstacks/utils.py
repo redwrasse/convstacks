@@ -26,7 +26,6 @@ def ar2_process(a, b, x0, x1):
 
     a, b parameters
     x0, x1 first two sequence values
-
     """
 
     x2 = b * x0 + a * x1

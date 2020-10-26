@@ -28,12 +28,19 @@ class LpConv(torch.nn.Conv1d):
             bias=bias
         )
 
-        # verify this relation
-        self.__padding = stride * dilation * (kernel_size - 1)
+        # from pytorch docs: output length =
+        # (input length + 2 * padding - dilation * (kernel_size - 1) -1 ) / stride + 1
+
 
     def forward(self, x):
+        input_length = x.shape[-1]
+        # note self.padding parameter is conv1d double padding parameter, not our padding
+        output_length = \
+            int((input_length + 2 * self.padding[0] - self.dilation[0]*(self.kernel_size[0]-1) - 1) / self.stride[0] + 1)
+        # set additional padding to ensure output length = input length
+        __padding = input_length - output_length
         lp_x = F.pad(x,
-                     pad=self.__padding,
+                     pad=[__padding, 0],
                      mode='constant',
                      value=0)
         return super(LpConv, self).forward(lp_x)

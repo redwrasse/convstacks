@@ -1,20 +1,32 @@
-.. convstacks documentation master file, created by
-   sphinx-quickstart on Wed Oct 21 23:03:02 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to convstacks's documentation!
-======================================
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
 
+Background
+~~~~~~~~~~
 
-Indices and tables
-==================
+Convolutions are translation-invariant kernels: a dog in a picture is picked up whether it is 27 or 142 pixels from the left edge of the scene. The convolution :math:`\mathbf{x} * \mathbf{w}` between a vector :math:`\mathbf{x}` and a kernel :math:`\mathbf{w}` is defined :math:`s_i = x_l w_{i-l}`. A convolutional layer of a neural network is a convolution with a bias and activation, :math:`\phi(\mathbf{x} * \mathbf{w} + \mathbf{b})`.
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+Properties
+~~~~~~~~~~
+
+Composition
+=========
+
+Convolutions can be composed. In fact they usually are in neural networks. For example, stacks of increasingly dilated convolutions underpin the Wavenet model, yielding efficient long-range correlations.
+
+Kernel Size
+=========
+
+Dilation
+=========
+
+Stride
+=========
+
+Tiling
+=========
+
+Padding
+=========
+
+
+
