@@ -15,7 +15,8 @@ class TestLpConv(unittest.TestCase):
     def test_forward(self):
         x = torch.ones(size=(5, 1, 4))
         y = self.lpc(x)
-        assert y.shape == x.shape, "should match input shape"
+        assert y.shape == x.shape, "left-padded conv " \
+                                   "should match input shape"
 
 
 if __name__ == "__main__":

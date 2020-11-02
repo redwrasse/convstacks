@@ -1,5 +1,6 @@
 import random
 import torch
+import torchaudio
 
 
 def partial_derivative(y, x, i, j):
@@ -35,3 +36,24 @@ def ar2_process(a, b, x0, x1):
         x2 = b * x0 + a * x1 + random.gauss(0, 10 ** -5)
         yield x2
 
+
+def mu_encoding(x, quantization_channels):
+    # to do: remove dependence on torchaudio, implement
+    # mu encoding directly
+    assert torch.max(x) <= 1. and torch.min(x) >= -1., \
+        "mu encoding input not within required bounds [-1, 1]"
+    return torchaudio.functional.mu_law_encoding(x,
+                                                 quantization_channels=quantization_channels)
+
+# for audio_data in YESNO_DATA:
+#      waveform, sample_rate, labels = audio_data
+#
+#      quantized_waveform = torch.nn.functional.one_hot(torchaudio.functional.mu_law_encoding(waveform,
+#                                            quantization_channels=256), 256).permute(0, 2, 1)
+#      n = quantized_waveform.shape[2]
+#      indices = list(range(int(n/INPUT_CHUNK_LENGTH)))
+#      random.shuffle(indices)
+#      for i in indices:
+#          chunk = quantized_waveform[:, :,
+#                  i * INPUT_CHUNK_LENGTH: (i+1) * INPUT_CHUNK_LENGTH].float()
+#          yield chunk

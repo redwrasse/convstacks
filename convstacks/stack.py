@@ -6,7 +6,7 @@ import torch
 
 class Stack:
 
-    def __init__(self, n_layers, kernel_length, dilation_rate):
+    def __init__(self, n_layers, kernel_length, dilation_rate=2):
         self.n_layers = n_layers
         self.kernel_length = kernel_length
         self.dilation_rate = dilation_rate
@@ -15,7 +15,7 @@ class Stack:
                                   dilation_rate=dilation_rate)
 
 
-def _build_stack(n_layers, kernel_length, dilation_rate=2):
+def _build_stack(n_layers, kernel_length, dilation_rate):
     # to do: generalize parameters
     # effective kernel length with stride of 1 for n layers is
     # sum_{i=0 to n-1} kernel_length * dilation_rate**i
@@ -57,7 +57,8 @@ def softmax_loss_fn(output, input, k):
     pass
 
 
-def train_stack(stack, data, loss_type: Losses = Losses.mse):
+def train_stack_ar(stack, data, loss_type: Losses = Losses.mse):
+    # train an autoregressive model on the data, using the stack
 
     def make_batched(data, batch_size):
         batched = []

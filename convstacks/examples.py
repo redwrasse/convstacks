@@ -1,6 +1,6 @@
 # examples.py
 """
-Assuming a finite paste time dependence and linear dependence
+Assuming a finite past time dependence and linear dependence
 it becomes an auto-regressive model. This can be trained by
 convolutional layers but the time series has to be appropriately
 lined up at input and output layers.
@@ -28,7 +28,7 @@ This trained model then allows prediction, outputting the next timestep value x5
 generate a sequence of predictions.
 """
 from utils import ar2_process
-from stack import Stack, train_stack, analyze_stack
+from stack import Stack, train_stack_ar, analyze_stack
 
 
 def train_ar2():
@@ -42,7 +42,7 @@ def train_ar2():
     for i in range(n_samples):
         data.append(gen.__next__())
 
-    train_stack(stack, data)
+    train_stack_ar(stack, data)
 
 
 if __name__ == '__main__':
