@@ -37,30 +37,29 @@ def ar2_process(a, b, x0, x1):
         yield x2
 
 
-def mu_encoding(x, quantization_channels):
-    # to do: remove dependence on torchaudio, implement
-    # mu encoding directly
-    assert torch.max(x) <= 1. and torch.min(x) >= -1., \
-        "mu encoding input not within required bounds [-1, 1]"
-    enc = get_encoding(quantization_channels)
-    return enc(x)
-
-
 def get_encoding(m):
+    # to do remove dep. on torchaudio, implement mu encoding directly
     return torchaudio.transforms.MuLawEncoding(quantization_channels=m)
 
 
 def get_decoding(m):
+    # to do remove dep. on torchaudio, implement mu encoding/decoding directly
     return torchaudio.transforms.MuLawDecoding(quantization_channels=m)
 
 
-def waveform_to_categorical(waveform):
-    enc = get_encoding()
+def waveform_to_categorical(waveform, m):
+
+    assert torch.max(waveform) <= 1. and torch.min(waveform) >= -1., \
+        "mu encoding input not within required bounds [-1, 1]"
+    enc = get_encoding(m)
     return enc(waveform)
 
 
 def waveform_to_input(waveform, m):
-    categorical = waveform_to_categorical(waveform)
+    assert waveform.shape[1] == 1, "expected single channel waveform"
+    categorical = waveform_to_categorical(waveform, m)
+    z = torch.nn.functional.one_hot(categorical, m)
+    #!! for the time being assume single channel so can squeeze dim=1 (can generalize later)
     return torch.squeeze(torch.nn.functional.one_hot(categorical, m),
-                    dim=0).permute(0, 2, 1).float()
+                    dim=1).permute(0, 2, 1).float()
 
