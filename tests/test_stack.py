@@ -2,8 +2,8 @@
 import torch
 import unittest
 from convstacks.stack import Stack,\
-    analyze_stack, train_stack_ar
-from utils import ar2_process
+    analyze_stack, train_stack_ar,\
+    mse_loss_fn
 
 
 class TestStack(unittest.TestCase):
@@ -24,6 +24,18 @@ class TestStack(unittest.TestCase):
 
     def test_analyze_stack(self):
         analyze_stack(self.example_stack)
+
+    def test_mse_loss_fn(self):
+        # should have zero loss for output y such that y_i = x_i+1
+        x = torch.randn(size=(10, 4, 6))
+        y = x[:, :, 1:]
+        x2 = x[:, :, :-1]
+        loss = mse_loss_fn(y, x2, k=2)
+        assert torch.eq(loss, torch.Tensor([0.,])),\
+            "expected zero loss on mse loss function"
+
+    def test_softmax_loss_fn(self):
+        pass
 
     def test_train_stack_ar(self):
         pass

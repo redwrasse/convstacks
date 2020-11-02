@@ -9,8 +9,8 @@ class TestUtils(unittest.TestCase):
     def test_mu_encoding(self):
         example_input = torch.clamp(torch.randn(size=(5, 1, 4)),
                                     min=-1., max=1.)
-        example_output = mu_encoding(example_input,
-                                     quantization_channels=10)
+        example_output = mu_encoding(example_input, quantization_channels=10)
+
         assert example_output.shape == example_input.shape
         # check all values in set {0, 1, ..., 9}
         encodings = set(range(10))
