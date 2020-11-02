@@ -31,7 +31,6 @@ class LpConv(torch.nn.Conv1d):
         # from pytorch docs: output length =
         # (input length + 2 * padding - dilation * (kernel_size - 1) -1 ) / stride + 1
 
-
     def forward(self, x):
         input_length = x.shape[-1]
         # note self.padding parameter is conv1d double padding parameter, not our padding

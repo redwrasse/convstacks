@@ -1,4 +1,59 @@
 # stack.py
+"""
+
+
+x0, .... x5 (n = 6)
+with k = 2
+
+x2 = f(x0, x1)
+...
+x5 = f(x3, x4)
+
+
+x0, ..., xn-1 inputs
+y0, ....,yn-1 outputs
+model as sequence of convolutional layers w/left padding
+
+k effective kernel size:
+	xk  = f(x0, ..., xk-1)
+	...
+	xn-1 = f(xn-1-k, ..., xn-2)
+
+
+graphically lth output gets tied to lth input and preceding k - 1 inputs
+
+yl = f(xl-k+1,...xl)
+
+y0	y1  y2  y3  ... yn-1
+*	*	*	*	*	*
+
+ (convolutional layers)
+
+*	*   *   *	*	*
+x0  x1  x2  x3  ... xn-1
+
+So match model by matching output to input as y1 = x2, y2 = x3 etc,
+so that xl+1 = f(xl-k+1,...xl), as desired.
+
+so train model with loss function to match yl to xl+1.
+in loss function keep only full relationships: ignore first k - 1 outputs,
+ignore last output, ignore last input.
+
+loss = sum_i (i = k-1, n-2) el_loss(y_i, x_i+1)
+
+so looks like
+
+	    xk  ...        xn-1
+		*	*	*	*	*
+
+ (convolutional layers)
+
+*	*   *   *	*	*	*
+x0  .. xk-1  ....      xn-2
+
+
+
+"""
 from enum import Enum
 from lpconv import LpConv
 import torch
@@ -32,6 +87,8 @@ def _build_stack(n_layers, kernel_length, dilation_rate):
 def analyze_stack(stack):
     # ought to determine effective kernel length
     # for loss function
+    # the effective kernel length is defined as the longest previous dependence
+    # aka if x_n = f(x_(n-k), x_(n-k+1),...) then the effective kernel length is k
     # use partial derivatives
     effective_kernel_length = sum(stack.kernel_length * stack.dilation_rate**i
                                   for i in range(stack.n_layers))
@@ -45,16 +102,45 @@ class Losses(Enum):
 
 
 def mse_loss_fn(output, input, k):
-
+    # k is effective kernel size
     modified_out = output[:, :, k - 1:-1]
     modified_in = input[:, :, k:]
     return torch.nn.MSELoss()(modified_out,
                               modified_in)
 
 
-def softmax_loss_fn(output, input, k):
+def softmax_loss_fn(output, input, k, show_match_fraction=False):
+    # input expected of shape (n, 1, l), w/categorical values
+    # output expected of shape (n, m, l), where m is number of categories
+    # should be logits (aka unnormalized) distribution over all m categories
+    # k is effective kernel size
     # per element softmax
-    pass
+    loss_output = output[:, :, k - 1:-1]
+    N = loss_output.shape[-1]
+    M = loss_output.shape[-2]
+    assert loss_output.shape == (1, M, N)
+    loss_input = torch.squeeze(input[:, :, k:],
+                               dim=1)
+    assert loss_input.shape == (1, N)
+    loss_fn = torch.nn.CrossEntropyLoss()
+    if show_match_fraction:
+        fraction_matched = match_fraction(loss_output, loss_input)
+        print(f'matched for loss on '
+              f'{fraction_matched * 100}% of quantized encoding values')
+    return loss_fn(loss_output, loss_input)
+
+
+def match_fraction(loss_output, loss_input):
+    loss_output_categorical = logit_to_categorical(loss_output)  # for debugging
+    if_true = torch.sum((loss_output_categorical == loss_input).float())
+    if_false = torch.sum((loss_output_categorical != loss_input).float())
+    fraction_matched = if_true / (if_false + if_true)
+    return fraction_matched
+
+
+def logit_to_categorical(logit):
+    return torch.argmax(torch.softmax(logit, dim=1), dim=1, keepdim=True)
+
 
 
 def train_stack_ar(stack, data, loss_type: Losses = Losses.mse):

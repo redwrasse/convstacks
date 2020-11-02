@@ -24,8 +24,8 @@ What it looks like in this example with k = 2. The first k - 1 (= 1 for k = 2 in
 Example auto-regressive model:
     AR(2) process x_t = a x_t-1 + b xt-2 + noise
     stationary if a in [-2, 2], b in [-1, 1]
-This trained model then allows prediction, outputting the next timestep value x5. Iterate to
-generate a sequence of predictions.
+This trained model then allows prediction, outputting the next timestep value x5.
+Iterate to generate a sequence of predictions.
 """
 from utils import ar2_process
 from stack import Stack, train_stack_ar, analyze_stack
