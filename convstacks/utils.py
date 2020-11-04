@@ -37,6 +37,28 @@ def ar2_process(a, b, x0, x1):
         yield x2
 
 
+def download_sample_audio(cutoff=None):
+    """65,000 one-second long utterances of 30 short words,
+     by thousands of different people
+     ref: https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html
+     """
+    print('downloading sample audio dataset ....')
+    speech_commands = torchaudio.datasets.SPEECHCOMMANDS('.', download=True)
+    data_loader = torch.utils.data.DataLoader(speech_commands,
+                                              batch_size=1,
+                                              shuffle=True,
+                                              num_workers=1)
+    print('finished downloading sample audio dataset.')
+    if cutoff is not None:
+        mini_data_loader = []
+        for i, e in enumerate(data_loader):
+            mini_data_loader.append(e)
+            if i > cutoff:
+                return mini_data_loader
+    else:
+        return data_loader
+
+
 def __get_encoding(m):
     # to do remove dep. on torchaudio, implement mu encoding directly
     return torchaudio.transforms.MuLawEncoding(quantization_channels=m)
@@ -62,4 +84,5 @@ def waveform_to_input(waveform, m):
     #!! for the time being assume single channel so can squeeze dim=1 (can generalize later)
     return torch.squeeze(torch.nn.functional.one_hot(categorical, m),
                     dim=1).permute(0, 2, 1).float()
+
 

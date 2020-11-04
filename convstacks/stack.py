@@ -60,25 +60,26 @@ import torch
 
 
 class Stack:
-
-    def __init__(self, n_layers, kernel_length, dilation_rate=2):
+    # TODO("generalize to arbitrary intermediate channel size")
+    def __init__(self, n_layers, kernel_length, dilation_rate=2, n_channels=1):
         self.n_layers = n_layers
         self.kernel_length = kernel_length
         self.dilation_rate = dilation_rate
         self.model = _build_stack(n_layers=n_layers,
                                   kernel_length=kernel_length,
-                                  dilation_rate=dilation_rate)
+                                  dilation_rate=dilation_rate,
+                                  n_channels=n_channels)
 
 
-def _build_stack(n_layers, kernel_length, dilation_rate):
+def _build_stack(n_layers, kernel_length, dilation_rate, n_channels):
     # to do: generalize parameters
     # effective kernel length with stride of 1 for n layers is
     # sum_{i=0 to n-1} kernel_length * dilation_rate**i
-    lpc = LpConv(in_channels=1, out_channels=1, kernel_size=kernel_length,
+    lpc = LpConv(in_channels=n_channels, out_channels=n_channels, kernel_size=kernel_length,
                  dilation=dilation_rate**0)
     for i in range(n_layers-1):
-        lpc = torch.nn.Sequential(lpc, LpConv(in_channels=1,
-                                              out_channels=1,
+        lpc = torch.nn.Sequential(lpc, LpConv(in_channels=n_channels,
+                                              out_channels=n_channels,
                                               kernel_size=kernel_length,
                                               dilation=dilation_rate**(i+1)))
     return lpc

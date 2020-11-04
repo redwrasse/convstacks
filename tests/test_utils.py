@@ -1,7 +1,8 @@
 import unittest
 import torch
 from utils import partial_derivative, ar2_process, \
-    waveform_to_input, waveform_to_categorical
+    waveform_to_input, waveform_to_categorical, \
+    download_sample_audio
 
 
 class TestUtils(unittest.TestCase):
@@ -31,6 +32,9 @@ class TestUtils(unittest.TestCase):
         assert example_output.shape == (example_input.shape[0], m,
                                         example_input.shape[2]),\
             "expected one hot encoded input"
+
+    def test_download_sample_audio(self):
+        download_sample_audio()
 
     def test_ar2_process(self):
         pass
