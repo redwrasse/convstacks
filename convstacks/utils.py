@@ -37,12 +37,12 @@ def ar2_process(a, b, x0, x1):
         yield x2
 
 
-def get_encoding(m):
+def __get_encoding(m):
     # to do remove dep. on torchaudio, implement mu encoding directly
     return torchaudio.transforms.MuLawEncoding(quantization_channels=m)
 
 
-def get_decoding(m):
+def __get_decoding(m):
     # to do remove dep. on torchaudio, implement mu encoding/decoding directly
     return torchaudio.transforms.MuLawDecoding(quantization_channels=m)
 
@@ -51,7 +51,7 @@ def waveform_to_categorical(waveform, m):
 
     assert torch.max(waveform) <= 1. and torch.min(waveform) >= -1., \
         "mu encoding input not within required bounds [-1, 1]"
-    enc = get_encoding(m)
+    enc = __get_encoding(m)
     return enc(waveform)
 
 

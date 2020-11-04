@@ -28,10 +28,15 @@ This trained model then allows prediction, outputting the next timestep value x5
 Iterate to generate a sequence of predictions.
 """
 from utils import ar2_process
-from stack import Stack, train_stack_ar, analyze_stack
+from stack import Stack, train_stack_ar, analyze_stack,\
+    Losses
 
 
-def train_ar2():
+def example1():
+    """
+    train an ar2 model on a single layer convolution
+    with an mse loss
+    """
     stack = Stack(n_layers=1, kernel_length=2, dilation_rate=1)
     analyze_stack(stack)
     a, b = -0.4, 0.5
@@ -42,9 +47,18 @@ def train_ar2():
     for i in range(n_samples):
         data.append(gen.__next__())
 
-    train_stack_ar(stack, data)
+    train_stack_ar(stack, data, loss_type=Losses.mse)
+
+
+def example2():
+    """ a multilayer convolution network on audio data"""
+    pass
+
+
+def train_ar2():
+    pass
 
 
 if __name__ == '__main__':
-    train_ar2()
+    example1()
 

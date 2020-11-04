@@ -142,8 +142,7 @@ def logit_to_categorical(logit):
     return torch.argmax(torch.softmax(logit, dim=1), dim=1, keepdim=True)
 
 
-
-def train_stack_ar(stack, data, loss_type: Losses = Losses.mse):
+def train_stack_ar(stack, data, loss_type):
     # train an autoregressive model on the data, using the stack
 
     def make_batched(data, batch_size):

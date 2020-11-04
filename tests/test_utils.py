@@ -9,9 +9,6 @@ class TestUtils(unittest.TestCase):
     def test_partial_derivative(self):
         pass
 
-    def test_get_decoding(self):
-        pass
-
     def test_waveform_to_categorical(self):
         example_input = torch.clamp(torch.randn(size=(5, 1, 4)),
                                     min=-1., max=1.)
