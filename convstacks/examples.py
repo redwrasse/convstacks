@@ -69,12 +69,15 @@ def example2():
 
     LEARNING_RATE = 1e-2
 
-    KERNEL_LENGTH = 2
+    KERNEL_LENGTH = 5
     MU_ENCODING_QUANTIZATION = 256
 
-    data_loader = download_sample_audio(cutoff=100)
-    stack = Stack(n_layers=5, kernel_length=KERNEL_LENGTH, dilation_rate=2,
+    NUM_TRAINING_CLIPS = 100
+
+    data_loader = download_sample_audio(cutoff=NUM_TRAINING_CLIPS)
+    stack = Stack(n_layers=10, kernel_length=KERNEL_LENGTH, dilation_rate=2,
                   n_channels=MU_ENCODING_QUANTIZATION)
+    analyze_stack(stack)
     model = stack.model
 
     optimizer = torch.optim.SGD(model.parameters(),
