@@ -1,9 +1,10 @@
 # test_stack.py
 import torch
 import unittest
-from convstacks.stack import Stack,\
-    analyze_stack, train_stack_ar,\
+from convstacks.stack import Stack, \
+    train_stack_ar,\
     mse_loss_fn
+from analyzer import analyze_stack
 
 
 class TestStack(unittest.TestCase):

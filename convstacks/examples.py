@@ -33,8 +33,8 @@ import random
 import torch
 from utils import ar2_process, download_sample_audio, waveform_to_categorical, \
     waveform_to_input
-from stack import Stack, train_stack_ar, analyze_stack,\
-    Losses, softmax_loss_fn
+from stack import Stack, train_stack_ar, Losses, softmax_loss_fn
+from analyzer import analyze_stack
 
 
 def example1():
@@ -72,7 +72,7 @@ def example2():
     KERNEL_LENGTH = 5
     MU_ENCODING_QUANTIZATION = 256
 
-    NUM_TRAINING_CLIPS = 100
+    NUM_TRAINING_CLIPS = 2
 
     data_loader = download_sample_audio(cutoff=NUM_TRAINING_CLIPS)
     stack = Stack(n_layers=10, kernel_length=KERNEL_LENGTH, dilation_rate=2,
