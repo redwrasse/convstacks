@@ -1,6 +1,9 @@
 import random
+from enum import Enum
+
 import torch
 import torchaudio
+from torch import __init__
 
 
 def partial_derivative(y, x, i, j):
@@ -86,3 +89,48 @@ def waveform_to_input(waveform, m):
                     dim=1).permute(0, 2, 1).float()
 
 
+class Losses(Enum):
+
+    mse = 1
+    softmax = 2
+
+
+def mse_loss_fn(output, input, k):
+    # k is effective kernel size
+    modified_out = output[:, :, k - 1:-1]
+    modified_in = input[:, :, k:]
+    return torch.nn.MSELoss()(modified_out,
+                              modified_in)
+
+
+def softmax_loss_fn(output, input, k, show_match_fraction=False):
+    # input expected of shape (n, 1, l), w/categorical values
+    # output expected of shape (n, m, l), where m is number of categories
+    # should be logits (aka unnormalized) distribution over all m categories
+    # k is effective kernel size
+    # per element softmax
+    loss_output = output[:, :, k - 1:-1]
+    N = loss_output.shape[-1]
+    M = loss_output.shape[-2]
+    assert loss_output.shape == (1, M, N)
+    loss_input = torch.squeeze(input[:, :, k:],
+                               dim=1)
+    assert loss_input.shape == (1, N)
+    loss_fn = torch.nn.CrossEntropyLoss()
+    if show_match_fraction:
+        fraction_matched = match_fraction(loss_output, loss_input)
+        print(f'matched for loss on '
+              f'{fraction_matched * 100}% of quantized encoding values')
+    return loss_fn(loss_output, loss_input)
+
+
+def match_fraction(loss_output, loss_input):
+    loss_output_categorical = logit_to_categorical(loss_output)  # for debugging
+    if_true = torch.sum((loss_output_categorical == loss_input).float())
+    if_false = torch.sum((loss_output_categorical != loss_input).float())
+    fraction_matched = if_true / (if_false + if_true)
+    return fraction_matched
+
+
+def logit_to_categorical(logit):
+    return torch.argmax(torch.softmax(logit, dim=1), dim=1, keepdim=True)

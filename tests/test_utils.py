@@ -1,6 +1,6 @@
 import unittest
 import torch
-from utils import partial_derivative, ar2_process, \
+from ops import partial_derivative, ar2_process, \
     waveform_to_input, waveform_to_categorical, \
     download_sample_audio
 

@@ -1,16 +1,16 @@
 # test_stack.py
 import torch
 import unittest
-from convstacks.stack import Stack, \
-    train_stack_ar,\
-    mse_loss_fn
+from convstacks.building_blocks import Block
+from ops import mse_loss_fn
+from train import train_stack_ar
 from analyzer import analyze_stack
 
 
 class TestStack(unittest.TestCase):
 
     def setUp(self):
-        self.example_stack = Stack(
+        self.example_stack = Block(
             n_layers=5,
             kernel_length=2,
             dilation_rate=2

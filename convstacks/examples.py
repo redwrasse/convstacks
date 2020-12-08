@@ -31,9 +31,10 @@ import math
 import os
 import random
 import torch
-from utils import ar2_process, download_sample_audio, waveform_to_categorical, \
-    waveform_to_input
-from stack import Stack, train_stack_ar, Losses, softmax_loss_fn
+from ops import ar2_process, download_sample_audio, waveform_to_categorical, \
+    waveform_to_input, Losses, softmax_loss_fn
+from building_blocks import Block
+from train import train_stack_ar
 from analyzer import analyze_stack
 
 
@@ -42,7 +43,7 @@ def example1():
     train an ar2 model on a single layer convolution
     with an mse loss
     """
-    stack = Stack(n_layers=1, kernel_length=2, dilation_rate=1)
+    stack = Block(n_layers=1, kernel_length=2, dilation_rate=1)
     analyze_stack(stack)
     a, b = -0.4, 0.5
     x0, x1 = 50, 60
@@ -67,15 +68,15 @@ def example2():
     N_TRAINING_EPOCHS = 10 ** 5
     NUM_PREDICTIONS = 10
 
-    LEARNING_RATE = 1e-2
+    LEARNING_RATE = 1e-3
 
     KERNEL_LENGTH = 5
     MU_ENCODING_QUANTIZATION = 256
 
-    NUM_TRAINING_CLIPS = 2
+    NUM_TRAINING_CLIPS = 2  # of audio clips to train on
 
     data_loader = download_sample_audio(cutoff=NUM_TRAINING_CLIPS)
-    stack = Stack(n_layers=10, kernel_length=KERNEL_LENGTH, dilation_rate=2,
+    stack = Block(n_layers=10, kernel_length=KERNEL_LENGTH, dilation_rate=2,
                   n_channels=MU_ENCODING_QUANTIZATION)
     analyze_stack(stack)
     model = stack.model
@@ -111,6 +112,7 @@ def example2():
             waveform_chunk = waveform[:, :, j: j + training_sample_length]
             categorical_input = waveform_to_categorical(waveform_chunk, m=MU_ENCODING_QUANTIZATION)
             input = waveform_to_input(waveform_chunk, m=MU_ENCODING_QUANTIZATION)
+            print(input.shape)
             optimizer.zero_grad()
             output = model(input)
             loss = softmax_loss_fn(output, categorical_input, k=KERNEL_LENGTH,

@@ -1,5 +1,5 @@
 import unittest
-from convstacks.lpconv import LpConv
+from building_blocks import LpConv
 import torch
 
 
