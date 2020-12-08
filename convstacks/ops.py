@@ -107,7 +107,7 @@ def softmax_loss_fn(output, input, k, show_match_fraction=False):
     # input expected of shape (n, 1, l), w/categorical values
     # output expected of shape (n, m, l), where m is number of categories
     # should be logits (aka unnormalized) distribution over all m categories
-    # k is effective kernel size
+    # k should be model receptive field size
     # per element softmax
     loss_output = output[:, :, k - 1:-1]
     N = loss_output.shape[-1]

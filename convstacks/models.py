@@ -12,11 +12,19 @@ class Wavenet(torch.nn.Module):
     def __init__(self):
         super(Wavenet, self).__init__()
 
+        self.receptive_field_size = 1024 * constants.WaveNetConstants.N_BLOCKS  #  verify
+
+        # add a pre 1-1 conv to change input discretization (from 256) down/up to
+        # intermediate channel dimension
+
+        self.pre_one_conv = building_blocks.OneConv(
+            in_channels=constants.WaveNetConstants.AUDIO_CHANNEL_SIZE,
+            out_channels=constants.WaveNetConstants.ONE_CONV_RESIDUAL_OUT_CHANNELS
+        )
+
         self.layers = torch.nn.ModuleList(
             [WavenetLayer(
-                in_channels=(constants.WaveNetConstants.AUDIO_CHANNEL_SIZE
-                             if i == 0 else
-                             constants.WaveNetConstants.ONE_CONV_RESIDUAL_OUT_CHANNELS),
+                in_channels=constants.WaveNetConstants.ONE_CONV_RESIDUAL_OUT_CHANNELS,
                 dilation=2**(i % constants.WaveNetConstants.BLOCK_N_LAYERS)
             ) for i in range(constants.WaveNetConstants.BLOCK_N_LAYERS *
                              constants.WaveNetConstants.N_BLOCKS)]
@@ -27,8 +35,9 @@ class Wavenet(torch.nn.Module):
             out_channels=constants.WaveNetConstants.AUDIO_CHANNEL_SIZE)
 
     def forward(self, x):
+        pre_x = self.pre_one_conv(x)
         skip_outs = []
-        dense_outs = [x]
+        dense_outs = [pre_x]
         for i, layer in enumerate(self.layers):
             out = layer(dense_outs[i])
             dense_outs.append(out[0])
