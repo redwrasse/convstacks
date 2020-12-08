@@ -112,6 +112,18 @@ class GatedActivationUnit(torch.nn.Module):
         return torch.tanh(wf) * torch.sigmoid(wg)
 
 
+class ResidualBlock(torch.nn.Module):
+
+    """ Residual block: transforms a layer F(x) to F(x) + x """
+
+    def __init__(self, model):
+        super(ResidualBlock, self).__init__()
+
+    def forward(self, x):
+        out = x + self.model(x)
+        return out
+
+
 class OneConv(torch.nn.Conv1d):
 
     """ a '1 conv' """
@@ -119,12 +131,11 @@ class OneConv(torch.nn.Conv1d):
     def __init__(self,
                  in_channels,
                  out_channels,
-                 kernel_size=1,
                  bias=True):  # bias needed?
         super(OneConv, self).__init__(
             in_channels=in_channels,
             out_channels=out_channels,
-            kernel_size=kernel_size,
+            kernel_size=1,
             bias=bias
         )
 

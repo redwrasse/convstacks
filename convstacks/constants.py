@@ -25,6 +25,8 @@ discussion there about selecting various parameters, also including
 discriminiatve gaussian as possible training in addition to discriminative
 categorical
 
+(lots of other discussion in other issues about changing model architecture)
+
 
 wavenet parameters in ibab's implementation
 
