@@ -46,7 +46,7 @@ Formal datasets provided
 
 ### Examples
 
-* The AR(2) model can be learned immediately with a single convolutional layer.
+* The AR(2) model can be learned immediately with a single convolutional layer and as a discriminative Gaussian model.
 
 ```python
 
