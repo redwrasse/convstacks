@@ -1,6 +1,6 @@
 # wavenet_example.py
 
-from models import Wavenet
+from models import build_wavenet
 import constants
 import ops
 import os
@@ -9,7 +9,7 @@ import torch
 
 def wavenet_example():
 
-    model = Wavenet()
+    model = build_wavenet()
     checkpt_path = "./checkpoint"
     model_save_path = "./model"
 

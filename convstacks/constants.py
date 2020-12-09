@@ -78,8 +78,18 @@ class WaveNetConstants:
     # Selection depends on desired receptive field size
     N_BLOCKS = 3
 
-    # length of timeseries chunks to feed to wavenet
-    # should just be the total model
-    # receptive field length rather than an independent constant?
-    INPUT_CHUNK_LENGTH = 1000
+
+class WaveNetToyConstants:
+
+    # quick training toy constants
+
+    AUDIO_CHANNEL_SIZE = 10
+    MU = AUDIO_CHANNEL_SIZE - 1
+    FILTER_GATE_KERNEL_SIZE = 2
+    FILTER_GATE_OUT_CHANNELS = 6
+    ONE_CONV_RESIDUAL_OUT_CHANNELS = 6
+    ONE_CONV_SKIP_OUT_CHANNELS = 50
+    BLOCK_N_LAYERS = 10
+    N_BLOCKS = 3
+
 
