@@ -36,3 +36,7 @@ predict(model, inputs)
 
 
 ```
+
+### Build Docs
+
+Run [Update Docs](./update_docs) script

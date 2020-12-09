@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'convstacks'
+project = 'wavenetlike'
 copyright = '2020, redwrasse'
 author = 'redwrasse'
 
