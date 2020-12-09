@@ -41,9 +41,18 @@ Concepts
 There are a large number of possible architecture choices and parameter tweaks, but a few
 are of primary interest
 
-* Waveform sample frequency and expected correlation length.
-* The ratio of the total # of parameters / network depth.
-* The receptive field length of the network.
+* waveform sample frequency and expected correlation length.
+* :math:`\gamma :=` ratio of the total # of parameters / network depth.
+* :math:`\Delta :=` receptive field length of the network.
+
+At its core Wavenet-like models are just about combining increasingly dilated convolutions to generate
+autoregressive models with large :math:`\Delta` and small  :math:`\gamma`. The rest are possible architectural tricks like
+gated activations, skip-residual connections, and waveform discretization.
+
+The original Wavenet as published trains on audio with sample frequencies of ~16,000 samples/second,
+with multiple (3-5) blocks of dilated convolutions generating a receptive field on the order of ~200-300ms,
+or a receptive field length of ~3200-4800 samples.
+
 
 For possible architecture choices and parameter tweaks see separate page (tbd).
 
@@ -64,6 +73,8 @@ Training
 Training the original Wavenet on real audio takes a long time (n hours?, deps on computational resource).
 On the other hand training a conceptually equivalent smaller model can be done quickly, for
 demonstration purposes. See WavenetConstants and WavenetToyConstants.
+
+Because of the translational invariance for an autoregressive model, training is done in parallel for each :math:`p(x_i \mid x_{i -\Delta} ... x_{i-1})`, with :math:`\Delta` the receptive field size.
 
 Datasets
 ============
@@ -90,6 +101,7 @@ Examples
         data.append(gen.__next__())
     train_stack_ar(stack, data, loss_type=Losses.mse)
 
+
 * A smaller wavenet model (fewer parameters and coarser discretization) achieves ~50% training accuracy in a minute on the `Speech Commands <https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html>`_  dataset. Of course, its predictions with be commensurably coarse.
 
 .. code-block:: python
@@ -99,6 +111,7 @@ Examples
     dataset = ops.download_sample_audio(cutoff=5)
     train.train(model, dataset)
 
+
 * Full Wavenet.
 .. code-block:: python
 
@@ -106,6 +119,7 @@ Examples
     model = build_wavenet()
     dataset = ops.download_sample_audio(cutoff=5)
     train.train(model, dataset)
+
 
 To Do
 ============
