@@ -32,7 +32,7 @@ Use
         receptive field size
         ...
 
-    train(model)
+    train(model, dataset)
     predict(model, inputs)
 
 
@@ -79,13 +79,33 @@ Examples
 * The AR(2) model can be learned immediately with a single convolutional layer.
 .. code-block:: python
 
-    # code sample goes here
+    # current form
+    stack = Block(n_layers=1, kernel_length=2, dilation_rate=1)
+    a, b = -0.4, 0.5
+    x0, x1 = 50, 60
+    n_samples = 100
+    data = []
+    gen = ar2_process(a, b, x0, x1)
+    for i in range(n_samples):
+        data.append(gen.__next__())
+    train_stack_ar(stack, data, loss_type=Losses.mse)
 
-* A smaller wavenet model (fewer parameters and coarser discretization) can be learned in minutes on the `Speech Commands <https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html>`_  dataset. Of course, its predictions with be commensurably coarse.
+* A smaller wavenet model (fewer parameters and coarser discretization) achieves ~50% training accuracy in a minute on the `Speech Commands <https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html>`_  dataset. Of course, its predictions with be commensurably coarse.
 
 .. code-block:: python
 
-    # code sample goes here
+    # current form
+    model = build_wavenet_toy()
+    dataset = ops.download_sample_audio(cutoff=5)
+    train.train(model, dataset)
+
+* Full Wavenet.
+.. code-block:: python
+
+    # current form
+    model = build_wavenet()
+    dataset = ops.download_sample_audio(cutoff=5)
+    train.train(model, dataset)
 
 To Do
 ============

@@ -150,10 +150,10 @@ def softmax_loss_fn(output, input, k, show_match_fraction=False):
     loss_output = output[:, :, k - 1:-1]
     N = loss_output.shape[-1]
     M = loss_output.shape[-2]
-    assert loss_output.shape == (1, M, N)
+    assert loss_output.shape[1:] == (M, N)
     loss_input = torch.squeeze(input[:, :, k:],
                                dim=1)
-    assert loss_input.shape == (1, N)
+    assert loss_input.shape[1:] == (N,)
     loss_fn = torch.nn.CrossEntropyLoss()
     if show_match_fraction:
         fraction_matched = match_fraction(loss_output, loss_input)
