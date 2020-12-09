@@ -1,6 +1,6 @@
 # wavenetlike
 
-**Note: This library is a work in progress. To train the original Wavenet on the Speech Commands dataset, run this [script](https://github.com/redwrasse/convstacks/blob/main/convstacks/wavenet_example.py), or [this one](https://github.com/redwrasse/convstacks/blob/main/convstacks/wavenet_example_tpu.py) for TPUs. To access other library functionality currently work directly with source (examples below).** 
+**Note: This library is a work in progress. To train the original Wavenet on the Speech Commands dataset, run this [script](https://github.com/redwrasse/convstacks/blob/main/convstacks/wavenet_example.py), or [this one](https://github.com/redwrasse/convstacks/blob/main/convstacks/wavenet_example_tpu.py) for TPUs. To access other library functionality currently work directly with source (see examples below).** 
 
 ### Background
 A library for building wavenet-like models: generative auto-regressive models with large receptive fields. The canonical example is of course [Wavenet](https://arxiv.org/pdf/1609.03499.pdf) itself.
@@ -41,8 +41,8 @@ Docs are built with [Sphinx](https://www.sphinx-doc.org/en/master/). For the tim
 
 Formal datasets provided
 
-* An AR(2) autoregressive model, :math:`X_t = c + a X_{t-1} + b X_{t-2} + \epsilon_t`. Parameters :math:`a, b` will match network weights in a single trained convolutional layer of kernel length 2.
-* The `Speech Commands <https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html>`_ audio dataset.
+* An AR(2) autoregressive model, X_t = c + a X_{t-1} + b X_{t-2} + \epsilon_t`. Parameters `a, b` will match network weights in a single trained convolutional layer of kernel length 2.
+* The [Speech Commands](https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html) audio dataset.
 * Custom Dataset: load custom waveforms.
 
 ### Examples
