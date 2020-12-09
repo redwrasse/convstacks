@@ -81,7 +81,7 @@ Formal datasets provided
     
 ```
 
-* Full Wavenet on the Speech Commands](https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html) dataset.
+* Full Wavenet on the [Speech Commands](https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html) dataset.
 ```python
 
 # current form
