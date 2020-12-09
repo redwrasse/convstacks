@@ -5,7 +5,7 @@ from ops import partial_derivative, ar2_process, \
     download_sample_audio
 
 
-class TestUtils(unittest.TestCase):
+class TestOps(unittest.TestCase):
 
     def test_partial_derivative(self):
         pass
@@ -38,6 +38,8 @@ class TestUtils(unittest.TestCase):
 
     def test_ar2_process(self):
         pass
+
+
 
 
 if __name__ == "__main__":

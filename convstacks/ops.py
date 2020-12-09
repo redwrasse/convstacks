@@ -2,8 +2,6 @@ import random
 from enum import Enum
 
 import torch
-import torchaudio
-from torch import __init__
 
 
 def partial_derivative(y, x, i, j):
@@ -62,22 +60,62 @@ def download_sample_audio(cutoff=None):
         return data_loader
 
 
-def __get_encoding(m):
-    # to do remove dep. on torchaudio, implement mu encoding directly
-    return torchaudio.transforms.MuLawEncoding(quantization_channels=m)
+def mu_law_encoding(
+        x,
+        quantization_channels):
+    r"""Encode signal based on mu-law companding.  For more info see the
+    `Wikipedia Entry <https://en.wikipedia.org/wiki/%CE%9C-law_algorithm>`_
+
+    This algorithm assumes the signal has been scaled to between -1 and 1 and
+    returns a signal encoded with values from 0 to quantization_channels - 1.
+
+    Args:
+        x (Tensor): Input tensor
+        quantization_channels (int): Number of channels
+
+    Returns:
+        Tensor: Input after mu-law encoding
+    """
+    mu = quantization_channels - 1.0
+    if not x.is_floating_point():
+        x = x.to(torch.float)
+    mu = torch.tensor(mu, dtype=x.dtype)
+    x_mu = torch.sign(x) * torch.log1p(mu * torch.abs(x)) / torch.log1p(mu)
+    x_mu = ((x_mu + 1) / 2 * mu + 0.5).to(torch.int64)
+    return x_mu
 
 
-def __get_decoding(m):
-    # to do remove dep. on torchaudio, implement mu encoding/decoding directly
-    return torchaudio.transforms.MuLawDecoding(quantization_channels=m)
+def mu_law_decoding(
+        x_mu,
+        quantization_channels):
+    r"""Decode mu-law encoded signal.  For more info see the
+    `Wikipedia Entry <https://en.wikipedia.org/wiki/%CE%9C-law_algorithm>`_
+
+    This expects an input with values between 0 and quantization_channels - 1
+    and returns a signal scaled between -1 and 1.
+
+    Args:
+        x_mu (Tensor): Input tensor
+        quantization_channels (int): Number of channels
+
+    Returns:
+        Tensor: Input after mu-law decoding
+    """
+    mu = quantization_channels - 1.0
+    if not x_mu.is_floating_point():
+        x_mu = x_mu.to(torch.float)
+    mu = torch.tensor(mu, dtype=x_mu.dtype)
+    x = ((x_mu) / mu) * 2 - 1.0
+    x = torch.sign(x) * (torch.exp(torch.abs(x) * torch.log1p(mu)) - 1.0) / mu
+    return x
 
 
 def waveform_to_categorical(waveform, m):
 
     assert torch.max(waveform) <= 1. and torch.min(waveform) >= -1., \
         "mu encoding input not within required bounds [-1, 1]"
-    enc = __get_encoding(m)
-    return enc(waveform)
+    enc = mu_law_encoding(waveform, m)
+    return enc
 
 
 def waveform_to_input(waveform, m):
