@@ -33,7 +33,7 @@ For a discussion of technical and mathematical details see separate page (tbd).
 ### Docs
 
 Docs are built with [Sphinx](https://www.sphinx-doc.org/en/master/). For the time being please build docs locally, following this [script](./update_docs).
-Some of the documentation is copied into this readme.
+Some of the documentation has been copied into this readme.
 
 
 ### Datasets
