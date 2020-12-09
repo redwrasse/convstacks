@@ -12,7 +12,7 @@ class Wavenet(torch.nn.Module):
     def __init__(self):
         super(Wavenet, self).__init__()
 
-        self.receptive_field_size = 1024 * constants.WaveNetConstants.N_BLOCKS  #  verify
+        self.receptive_field_size = 1024 * constants.WaveNetConstants.N_BLOCKS  # verify
 
         # add a pre 1-1 conv to change input discretization (from 256) down/up to
         # intermediate channel dimension
