@@ -3,24 +3,25 @@
 from models import build_wavenet,\
   build_wavenet_toy
 import train
-import constants
-import ops
-import os
-import torch
+import dataset
+
+
+def ar2_example():
+    pass
 
 
 def wavenet_example():
 
     model = build_wavenet()
-    dataset = ops.download_sample_audio(cutoff=100)
-    train.train(model, dataset)
+    data = dataset.SpeechCommands(cutoff=100)
+    train.train(model, data)
 
 
 def wavenet_simple_example():
 
     model = build_wavenet_toy()
-    dataset = ops.download_sample_audio(cutoff=5)
-    train.train(model, dataset)
+    data = dataset.SpeechCommands(cutoff=5)
+    train.train(model, data)
 
 
 if __name__ == "__main__":

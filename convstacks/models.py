@@ -122,6 +122,10 @@ def build_wavenet_toy():
     )
 
 
+def build_ar2():
+    pass
+
+
 def build_custom_model():
     pass
 
