@@ -7,6 +7,7 @@ import os
 import torch
 import torch_xla
 import torch_xla.core.xla_model as xm
+import torch_xla.utils.serialization as xser
 
 
 def wavenet_example_tpu():
@@ -29,8 +30,10 @@ def wavenet_example_tpu():
 
     print("checking for existing checkpointed model ...")
     if os.path.exists(checkpt_path):
-        checkpoint = torch.load(checkpt_path)
+
+        checkpoint = xser.load(checkpt_path)
         model.load_state_dict(checkpoint['model_state_dict'])
+
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         saved_epoch = checkpoint['epoch']
         # saved_epoch_loss = checkpoint['loss']
@@ -59,7 +62,7 @@ def wavenet_example_tpu():
             if epoch > 10**5:
                 break
             if epoch % 2 == 0:
-                torch.save({
+                xm.save({
                     'epoch': epoch + saved_epoch,
                     'model_state_dict': model.state_dict(),
                     'optimizer_state_dict': optimizer.state_dict(),
@@ -68,7 +71,8 @@ def wavenet_example_tpu():
                 )
                 print(f"saved checkpoint at epoch {epoch + saved_epoch}")
                 print(f'saving model to {model_save_path}...')
-                torch.save(model.state_dict(), model_save_path)
+                xser.save(model.state_dict(), model_save_path)
+
 
 
 if __name__ == "__main__":
