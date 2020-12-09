@@ -28,18 +28,18 @@ def wavenet_example_tpu():
 
     saved_epoch = 0
 
-    print("checking for existing checkpointed model ...")
-    if os.path.exists(checkpt_path):
-
-        checkpoint = xser.load(checkpt_path)
-        model.load_state_dict(checkpoint['model_state_dict'])
-
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        saved_epoch = checkpoint['epoch']
-        # saved_epoch_loss = checkpoint['loss']
-        print(f"loaded checkpoint model at epoch {saved_epoch}")
-    else:
-        print("no checkpointed model found.")
+    # print("checking for existing checkpointed model ...")
+    # if os.path.exists(checkpt_path):
+    #
+    #     checkpoint = xser.load(checkpt_path)
+    #     model.load_state_dict(checkpoint['model_state_dict'])
+    #
+    #     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    #     saved_epoch = checkpoint['epoch']
+    #     # saved_epoch_loss = checkpoint['loss']
+    #     print(f"loaded checkpoint model at epoch {saved_epoch}")
+    # else:
+    #     print("no checkpointed model found.")
 
     model.train()
     print("training ...")
@@ -61,17 +61,17 @@ def wavenet_example_tpu():
 
             if epoch > 10**5:
                 break
-            if epoch % 2 == 0:
-                xm.save({
-                    'epoch': epoch + saved_epoch,
-                    'model_state_dict': model.state_dict(),
-                    'optimizer_state_dict': optimizer.state_dict(),
-                    'loss': loss.item()
-                }, checkpt_path
-                )
-                print(f"saved checkpoint at epoch {epoch + saved_epoch}")
-                print(f'saving model to {model_save_path}...')
-                xser.save(model.state_dict(), model_save_path)
+            # if epoch % 2 == 0:
+            #     xm.save({
+            #         'epoch': epoch + saved_epoch,
+            #         'model_state_dict': model.state_dict(),
+            #         'optimizer_state_dict': optimizer.state_dict(),
+            #         'loss': loss.item()
+            #     }, checkpt_path
+            #     )
+            #     print(f"saved checkpoint at epoch {epoch + saved_epoch}")
+            #     print(f'saving model to {model_save_path}...')
+            #     xser.save(model.state_dict(), model_save_path)
 
 
 
