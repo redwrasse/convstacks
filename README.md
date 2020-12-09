@@ -54,6 +54,20 @@ Formal datasets provided
 * The [Speech Commands](https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html) audio dataset.
 * Custom Dataset: load custom waveforms (tbd)
 
+### Analyzer
+
+Analyzer operations are intended (tbd) as analysis of dataset and model properties, eventually ideally suggesting model architecture. These operations are tbd,
+based on such parameters like `gamma, Delta`.
+
+```python
+
+analyze_dataset(dataset) # sample frequency, correlation lengths
+analyze_model(model) # Delta, gamma
+# help with model determination based off dataset
+# properties ....
+
+```
+
 ### Examples
 
 * The AR(2) model can be learned immediately with a single convolutional layer and as a discriminative Gaussian model.
