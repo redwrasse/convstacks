@@ -24,6 +24,9 @@ are of primary interest
 * `gamma` := ratio of the total # of parameters / network depth.
 * `Delta` := receptive field length of the network.
 
+
+![](./dilated.png)
+
 At its core Wavenet-like models are just about combining increasingly dilated convolutions to generate
 autoregressive models with large `Delta` and small  `gamma`. The rest are possible architectural tricks like
 gated activations, skip-residual connections, and waveform discretization.
