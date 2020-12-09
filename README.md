@@ -5,7 +5,11 @@
 ### Background
 A library for building wavenet-like models: generative auto-regressive models with large receptive fields. The canonical example is of course [Wavenet](https://arxiv.org/pdf/1609.03499.pdf) itself.
 
-Wavenet is just one in a family of models providing long receptive fields with a reasonable number of parameters. The specific model depends on the data and use case. This library is intended to help build appropriate models within this family with reduced work.
+Wavenet is just one in a family of models providing long receptive fields with a reasonable number of parameters. The specific model depends on the data and use case. This library is intended to help build appropriate models within this family with reduced work, rather than present the current state of the art. Formally any data series`{x_i]` with an ordering relation and presumed translation invariance is amenable to this framework for a 'causal' generative model
+
+```
+                        P(x_1, ...., x_n) = \prod_i P(x_i|x_i-n,...., x_i-1)
+```
 
 This library is built on the [Pytorch API](https://pytorch.org/docs/stable/index.html).
 
