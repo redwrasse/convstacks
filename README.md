@@ -40,7 +40,7 @@ Some of the documentation is copied into this readme.
 
 Formal datasets provided
 
-* An AR(2) autoregressive model, X_t = c + a X_{t-1} + b X_{t-2} + \epsilon_t`. Parameters `a, b` will match network weights in a single trained convolutional layer of kernel length 2.
+* An AR(2) autoregressive model, `X_t = c + a X_{t-1} + b X_{t-2} + \epsilon_t`. Parameters `a, b` will match network weights in a single trained convolutional layer of kernel length 2.
 * The [Speech Commands](https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html) audio dataset.
 * Custom Dataset: load custom waveforms.
 
