@@ -89,6 +89,6 @@ train.train(model, dataset)
 
 This library is a work in progress. Some future tasks
 
-* Support conditioning on a variable (see  [Wavenet paper](https://arxiv.org/pdf/1609.03499.pdf)
+* Support conditioning on a variable (see  [Wavenet paper](https://arxiv.org/pdf/1609.03499.pdf)).
 * Support easy distributed training on TPUs.
 * Provide an intelligent workflow from dataset to model selection.
