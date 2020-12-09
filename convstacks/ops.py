@@ -47,8 +47,8 @@ def download_sample_audio(cutoff=None):
     speech_commands = torchaudio.datasets.SPEECHCOMMANDS('.', download=True)
     data_loader = torch.utils.data.DataLoader(speech_commands,
                                               batch_size=1,
-                                              shuffle=True,
-                                              num_workers=1)
+                                              shuffle=True)
+
     print('finished downloading sample audio dataset.')
     if cutoff is not None:
         mini_data_loader = []

@@ -43,8 +43,8 @@ def wavenet_example_tpu():
     for epoch in range(10**5):
         for i, audio_sample in enumerate(data):
             waveform, sample_rate, labels1, labels2, labels3 = audio_sample
-            x = ops.waveform_to_input(waveform, m=constants.WaveNetConstants.AUDIO_CHANNEL_SIZE)
-            cx = ops.waveform_to_categorical(waveform, m=constants.WaveNetConstants.AUDIO_CHANNEL_SIZE)
+            x = ops.waveform_to_input(waveform, m=constants.WaveNetConstants.AUDIO_CHANNEL_SIZE).to(dev)
+            cx = ops.waveform_to_categorical(waveform, m=constants.WaveNetConstants.AUDIO_CHANNEL_SIZE).to(dev)
             #print(f'input shape: {x.shape}')
             y = model(x)
             #print(f'output shape: {y.shape}')
