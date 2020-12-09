@@ -13,7 +13,7 @@ This library is built on the [Pytorch API](https://pytorch.org/docs/stable/index
 There are a large number of possible architecture choices and parameter tweaks, but a few
 are of primary interest
 
-* Waveform sample frequency and expected correlation length.
+* waveform sample frequency and expected correlation length.
 * `gamma` := ratio of the total # of parameters / network depth.
 * `Delta` := receptive field length of the network.
 
