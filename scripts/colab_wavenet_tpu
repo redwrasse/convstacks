@@ -1,0 +1,8 @@
+VERSION = "nightly"  #@param ["1.5" , "20200325", "nightly"]
+!curl https://raw.githubusercontent.com/pytorch/xla/master/contrib/scripts/env-setup.py -o pytorch-xla-env-setup.py
+!sudo apt-get install libsox-fmt-all libsox-dev sox
+!python pytorch-xla-env-setup.py --version $VERSION
+!pip install git+git://github.com/pytorch/audio
+
+!git clone https://github.com/redwrasse/wavenetlike.git
+!python3 wavenetlike/wavenetlike/examples/wavenet_tpu.py
