@@ -6,12 +6,18 @@ class Dataset:
     def __init__(self, name):
         self.name = name
 
+    def get_dataset(self):
+        pass
+
 
 class SpeechCommands(Dataset):
 
     def __init__(self, name, cutoff):
         super(SpeechCommands, self).__init__(name)
         self.dataset = ops.download_sample_audio(cutoff=cutoff)
+
+    def get_dataset(self):
+        return self.dataset
 
 
 class AR2(Dataset):
@@ -26,3 +32,7 @@ class AR2(Dataset):
         for i in range(n_samples):
             data.append(gen.__next__())
         self.dataset = data
+
+    def get_dataset(self):
+        return self.dataset
+
