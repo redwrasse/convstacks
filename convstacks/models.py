@@ -123,7 +123,9 @@ def build_wavenet_toy():
 
 
 def build_ar2():
-    pass
+    # TODO("get rid of Stack abstraction")
+    stack = building_blocks.Block(n_layers=1, kernel_length=2, dilation_rate=1)
+    return stack.model
 
 
 def build_custom_model():

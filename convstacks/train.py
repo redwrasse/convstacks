@@ -81,7 +81,7 @@ def train(model,
                 torch.save(model.state_dict(), model_save_path)
 
 
-def train_stack_ar(stack, data, loss_type):
+def train_stack_ar(model, data, loss_type):
 
     # train an autoregressive model on the data, using the stack
 
@@ -95,7 +95,7 @@ def train_stack_ar(stack, data, loss_type):
             batch.append(e)
         return torch.FloatTensor(batched).unsqueeze(1)
 
-    optimizer = torch.optim.SGD(stack.model.parameters(),
+    optimizer = torch.optim.SGD(model.parameters(),
                                 lr=1e-3)
     n_epochs = 10**3
     batch_size = 5  # should actually set to some multiple of the
@@ -114,7 +114,7 @@ def train_stack_ar(stack, data, loss_type):
         for j in range(n_batches):
             optimizer.zero_grad()
             chunk = batched[j*batch_size:(j+1)*batch_size, :, :]
-            y = stack.model(chunk)
+            y = model(chunk)
             loss = loss_fn(y, chunk, k)
             loss.backward()
             epoch_loss += loss.item()

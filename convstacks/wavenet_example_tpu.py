@@ -1,6 +1,6 @@
-# wavenet_example.py
+# examples.py
 
-from models import Wavenet
+from models import build_wavenet
 import constants
 import ops
 import os
@@ -13,7 +13,7 @@ import torch_xla.utils.serialization as xser
 def wavenet_example_tpu():
 
     dev = xm.xla_device()
-    model = Wavenet().to(dev)
+    model = build_wavenet().to(dev)
     checkpt_path = "./checkpoint"
     model_save_path = "./model"
 
@@ -72,7 +72,6 @@ def wavenet_example_tpu():
             #     print(f"saved checkpoint at epoch {epoch + saved_epoch}")
             #     print(f'saving model to {model_save_path}...')
             #     xser.save(model.state_dict(), model_save_path)
-
 
 
 if __name__ == "__main__":

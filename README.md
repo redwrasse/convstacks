@@ -78,15 +78,9 @@ analyze_model(model) # Delta, gamma
 ```python
 
     # current form
-    stack = Block(n_layers=1, kernel_length=2, dilation_rate=1)
-    a, b = -0.4, 0.5
-    x0, x1 = 50, 60
-    n_samples = 100
-    data = []
-    gen = ar2_process(a, b, x0, x1)
-    for i in range(n_samples):
-        data.append(gen.__next__())
-    train_stack_ar(stack, data, loss_type=Losses.mse)
+    model = build_ar2()
+    data = dataset.AR2().get_dataset()
+    train.train_stack_ar(model, data, loss_type=ops.Losses.mse)
     
 ```
 
@@ -96,7 +90,7 @@ analyze_model(model) # Delta, gamma
 
     # current form
     model = build_wavenet_toy()
-    dataset = ops.download_sample_audio(cutoff=5)
+    dataset = ops.download_sample_audio(cutoff=5).get_dataset()
     train.train(model, dataset)
     
 ```
@@ -104,10 +98,10 @@ analyze_model(model) # Delta, gamma
 * Full Wavenet on the [Speech Commands](https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html) dataset.
 ```python
 
-# current form
-model = build_wavenet()
-dataset = ops.download_sample_audio(cutoff=5)
-train.train(model, dataset)
+    # current form
+    model = build_wavenet()
+    dataset = ops.download_sample_audio(cutoff=5).get_dataset()
+    train.train(model, dataset)
 
 ```
 

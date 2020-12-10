@@ -12,8 +12,8 @@ class Dataset:
 
 class SpeechCommands(Dataset):
 
-    def __init__(self, name, cutoff):
-        super(SpeechCommands, self).__init__(name)
+    def __init__(self, cutoff):
+        super(SpeechCommands, self).__init__("Speech Commands")
         self.dataset = ops.download_sample_audio(cutoff=cutoff)
 
     def get_dataset(self):
