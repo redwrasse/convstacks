@@ -1,7 +1,6 @@
 # building_blocks.py
 
 import torch
-from torch import __init__
 from torch.nn import functional as F
 
 
@@ -45,61 +44,6 @@ class LpConv(torch.nn.Conv1d):
                      mode='constant',
                      value=0)
         return super(LpConv, self).forward(lp_x)
-
-
-class Block:
-    """
-        A block is a composition of increasingly dilated layers
-
-        :param n_layers:
-        :param kernel_length:
-        :param dilation_rate:
-        :param in_channels:
-        :param out_channels:
-        :param intermediate_channels:
-        :return:
-        """
-    def __init__(self, n_layers, kernel_length, dilation_rate=2, in_channels=1,
-                 out_channels=1, intermediate_channels=1):
-        self.n_layers = n_layers
-        self.kernel_length = kernel_length
-        self.dilation_rate = dilation_rate
-        self.model = _build_block(n_layers=n_layers,
-                                  kernel_length=kernel_length,
-                                  dilation_rate=dilation_rate,
-                                  in_channels=in_channels,
-                                  out_channels=out_channels,
-                                  intermediate_channels=intermediate_channels)
-
-
-def _build_block(n_layers, kernel_length, dilation_rate, in_channels,
-                 out_channels, intermediate_channels):
-    """
-    A block is a composition of increasingly dilated layers
-
-    :param n_layers:
-    :param kernel_length:
-    :param dilation_rate:
-    :param in_channels:
-    :param out_channels:
-    :param intermediate_channels:
-    :return:
-    """
-    # to do: generalize parameters
-    # effective kernel length with stride of 1 for n layers is
-    # sum_{i=0 to n-1} kernel_length * dilation_rate**i
-    lpc = LpConv(in_channels=in_channels, out_channels=intermediate_channels, kernel_size=kernel_length,
-                 dilation=dilation_rate**0)
-    for i in range(n_layers-2):
-        lpc = torch.nn.Sequential(lpc, LpConv(in_channels=intermediate_channels,
-                                              out_channels=intermediate_channels,
-                                              kernel_size=kernel_length,
-                                              dilation=dilation_rate**(i+1)))
-    lpc = torch.nn.Sequential(lpc, LpConv(in_channels=intermediate_channels,
-                                              out_channels=out_channels,
-                                              kernel_size=kernel_length,
-                                              dilation=dilation_rate**(n_layers-1)))
-    return lpc
 
 
 class GatedActivationUnit(torch.nn.Module):
@@ -200,7 +144,7 @@ class WavenetLike(torch.nn.Module):
 
         # add a pre 1-1 conv to change input discretization
         # (from 256 down/up to intermediate channel dimension)
-        self.pre_one_conv = building_blocks.OneConv(
+        self.pre_one_conv = OneConv(
             in_channels=audio_channel_size,
             out_channels=one_conv_residual_out_channels
         )
@@ -217,7 +161,7 @@ class WavenetLike(torch.nn.Module):
             ) for i in range(block_n_layers *
                              n_blocks)]
         )
-        self.skip_pp = building_blocks.SkipPostProcessing(
+        self.skip_pp = SkipPostProcessing(
             in_channels=one_conv_skip_out_channels,
             intermediate_channels=one_conv_skip_out_channels,
             out_channels=audio_channel_size)
@@ -245,25 +189,25 @@ class WavenetLikeLayer(torch.nn.Module):
                  one_conv_residual_out_channels,
                  one_conv_skip_out_channels):
         super(WavenetLikeLayer, self).__init__()
-        self.gau = building_blocks.GatedActivationUnit()
-        self.filter_conv = building_blocks.LpConv(
+        self.gau = GatedActivationUnit()
+        self.filter_conv = LpConv(
             in_channels=in_channels,
             out_channels=filter_gate_out_channels,
             kernel_size=filter_gate_kernel_size,
             dilation=dilation
         )
-        self.gate_conv = building_blocks.LpConv(
+        self.gate_conv = LpConv(
             in_channels=in_channels,
             out_channels=filter_gate_out_channels,
             kernel_size=filter_gate_kernel_size,
             dilation=dilation
         )
-        self.residual_one_conv = building_blocks.OneConv(
+        self.residual_one_conv = OneConv(
             in_channels=filter_gate_out_channels,
             out_channels=one_conv_residual_out_channels,
             bias=True
         )
-        self.skip_one_conv = building_blocks.OneConv(
+        self.skip_one_conv = OneConv(
             in_channels=filter_gate_out_channels,
             out_channels=one_conv_skip_out_channels,
             bias=True
@@ -277,3 +221,4 @@ class WavenetLikeLayer(torch.nn.Module):
         skip_out = self.skip_one_conv(z)
         dense_out = residual_one_conv_out + x
         return dense_out, skip_out
+
