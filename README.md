@@ -70,7 +70,7 @@ Formal datasets provided
 ### Analyzer
 
 Analyzer operations are intended (tbd) as analysis of dataset and model properties, eventually ideally suggesting model architecture. These operations are tbd,
-based on such parameters like `gamma, Delta`.
+based on such parameters like `gamma, Delta`. Hyperparameter tuning is one brute-force way of doing this, but there are more obvious relationships between the model and data for this domain.
 
 ```python
 
