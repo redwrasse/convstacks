@@ -45,6 +45,13 @@ For a discussion of technical and mathematical details see separate page (tbd).
 Docs are built with [Sphinx](https://www.sphinx-doc.org/en/master/). For the time being please build docs locally, following this [script](scripts/update_docs).
 Some of the documentation has been copied into this readme.
 
+### Tests
+
+```
+python3 -m unittest discover
+
+```
+
 ### Building blocks API
 
 A standardized API is intended to build models from constituent building blocks: dilated convolutions, skip-residual connections, activations, possible discretization. This is a work in progress -tbd.
