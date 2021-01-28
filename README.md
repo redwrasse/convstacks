@@ -49,7 +49,6 @@ Some of the documentation has been copied into this readme.
 
 ```
 python3 -m unittest discover
-
 ```
 
 ### Building blocks API
