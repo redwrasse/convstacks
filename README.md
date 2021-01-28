@@ -73,6 +73,8 @@ analyze_model(model) # Delta, gamma
 
 ### Examples
 
+See [examples](./wavenetlike/examples) directory for scripts.
+
 * The AR(2) model can be learned immediately with a single convolutional layer and as a discriminative Gaussian model.
 
 ```python
