@@ -1,5 +1,7 @@
 # wavenetlike
 
+[![Build Status](https://travis-ci.com/redwrasse/wavenetlike.svg?branch=main)](https://travis-ci.com/redwrasse/wavenetlike)
+
 **Note: This library is a work in progress for generalized wavenet-like architectures. To train the original Wavenet on the Speech Commands dataset, run this [script](wavenetlike/examples/wavenet.py), or [this one](wavenetlike/examples/wavenet_tpu.py) for TPUs. To access other library functionality currently work directly with source (see examples below). To train on [Colab](https://colab.research.google.com/) with TPUs use this [script](scripts/colab_wavenet_tpu).** 
 
 ### Background
