@@ -9,6 +9,8 @@ A library for building wavenet-like models: generative auto-regressive models wi
 
 Wavenet is just one in a family of models providing long receptive fields with a reasonable number of parameters. The specific model depends on the data and use case. This library is intended to help build appropriate models within this family with reduced work, rather than present the current state of the art.
 
+As a first step this library just exposes the parameters of wavenet-type models: number of layers, dilation rate, internal channel size, etc. Nothing too special there. As a second step though, it makes sense to help specifying these parameters based on the specific data being trained- its correlation lengths and resolution, for example. This is the much harder goal.
+
 Formally this library is based off the fact that any data series`{x_i]` with an ordering relation and presumed translation invariance is amenable to a general framework for a 'causal' generative model
 
 ```
