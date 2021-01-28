@@ -1,6 +1,6 @@
 # wavenetlike
 
-**Note: This library is a work in progress for generalized wavenet-like architectures. To train the original Wavenet on the Speech Commands dataset, run this [script](https://github.com/redwrasse/convstacks/blob/main/convstacks/wavenet_example.py), or [this one](https://github.com/redwrasse/convstacks/blob/main/convstacks/wavenet_example_tpu.py) for TPUs. To access other library functionality currently work directly with source (see examples below). To train on [Colab](https://colab.research.google.com/) with TPUs use this [script](./scripts/colab_wavenet_tpu).** 
+**Note: This library is a work in progress for generalized wavenet-like architectures. To train the original Wavenet on the Speech Commands dataset, run this [script](wavenetlike/examples/wavenet.py), or [this one](wavenetlike/examples/wavenet_tpu.py) for TPUs. To access other library functionality currently work directly with source (see examples below). To train on [Colab](https://colab.research.google.com/) with TPUs use this [script](scripts/colab_wavenet_tpu).** 
 
 ### Background
 A library for building wavenet-like models: generative auto-regressive models with large receptive fields. The canonical example is of course [Wavenet](https://arxiv.org/pdf/1609.03499.pdf) itself.

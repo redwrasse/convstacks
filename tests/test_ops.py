@@ -1,8 +1,8 @@
 import unittest
 import torch
-from ops import partial_derivative, ar2_process, \
+from wavenetlike.ops import partial_derivative, ar2_process, \
     waveform_to_input, waveform_to_categorical, \
-    download_sample_audio
+    download_sample_audio, mse_loss_fn
 
 
 class TestOps(unittest.TestCase):
@@ -39,7 +39,14 @@ class TestOps(unittest.TestCase):
     def test_ar2_process(self):
         pass
 
-
+    def test_mse_loss_fn(self):
+        # should have zero loss for output y such that y_i = x_i+1
+        x = torch.randn(size=(10, 4, 6))
+        y = x[:, :, 1:]
+        x2 = x[:, :, :-1]
+        loss = mse_loss_fn(y, x2, k=2)
+        assert torch.eq(loss, torch.Tensor([0., ])), \
+            "expected zero loss on mse loss function"
 
 
 if __name__ == "__main__":
