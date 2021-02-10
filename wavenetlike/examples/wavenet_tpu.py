@@ -9,6 +9,10 @@ import torch_xla
 import torch_xla.core.xla_model as xm
 import torch_xla.utils.serialization as xser
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def wavenet_example_tpu():
 
@@ -19,7 +23,7 @@ def wavenet_example_tpu():
 
     num_training_clips = 2
     data = ops.download_sample_audio(cutoff=num_training_clips)
-    print(f"loaded {num_training_clips} audio samples to train on.")
+    logger.info(f"loaded {num_training_clips} audio samples to train on.")
 
     learning_rate = 1e-3
     optimizer = torch.optim.SGD(model.parameters(),
@@ -28,7 +32,7 @@ def wavenet_example_tpu():
 
     saved_epoch = 0
 
-    # print("checking for existing checkpointed model ...")
+    # logger.info("checking for existing checkpointed model ...")
     # if os.path.exists(checkpt_path):
     #
     #     checkpoint = xser.load(checkpt_path)
@@ -37,27 +41,27 @@ def wavenet_example_tpu():
     #     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     #     saved_epoch = checkpoint['epoch']
     #     # saved_epoch_loss = checkpoint['loss']
-    #     print(f"loaded checkpoint model at epoch {saved_epoch}")
+    #     logger.info(f"loaded checkpoint model at epoch {saved_epoch}")
     # else:
-    #     print("no checkpointed model found.")
+    #     logger.info("no checkpointed model found.")
 
     model.train()
-    print("training ...")
+    logger.info("training ...")
     for epoch in range(10**5):
         for i, audio_sample in enumerate(data):
             waveform, sample_rate, labels1, labels2, labels3 = audio_sample
             x = ops.waveform_to_input(waveform, m=constants.WaveNetConstants.AUDIO_CHANNEL_SIZE).to(dev)
             cx = ops.waveform_to_categorical(waveform, m=constants.WaveNetConstants.AUDIO_CHANNEL_SIZE).to(dev)
-            #print(f'input shape: {x.shape}')
+            #logger.info(f'input shape: {x.shape}')
             y = model(x)
-            #print(f'output shape: {y.shape}')
+            #logger.info(f'output shape: {y.shape}')
 
             optimizer.zero_grad()
             loss = ops.softmax_loss_fn(y, cx, receptive_field_size,
                                        show_match_fraction=True)
             loss.backward()
             optimizer.step()
-            print(f'(epoch = {epoch}) loss: {loss.item()}')
+            logger.info(f'(epoch = {epoch}) loss: {loss.item()}')
 
             if epoch > 10**5:
                 break
@@ -69,8 +73,8 @@ def wavenet_example_tpu():
             #         'loss': loss.item()
             #     }, checkpt_path
             #     )
-            #     print(f"saved checkpoint at epoch {epoch + saved_epoch}")
-            #     print(f'saving model to {model_save_path}...')
+            #     logger.info(f"saved checkpoint at epoch {epoch + saved_epoch}")
+            #     logger.info(f'saving model to {model_save_path}...')
             #     xser.save(model.state_dict(), model_save_path)
 
 
