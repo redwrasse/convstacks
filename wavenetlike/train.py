@@ -4,8 +4,12 @@
 """
 import torch
 import os
+import logging
 
 import ops
+
+
+logger = logging.getLogger(__name__)
 
 
 class WavenetStepOp:
@@ -20,9 +24,9 @@ class WavenetStepOp:
                                   m=self.audio_channel_size)
         cx = ops.waveform_to_categorical(waveform,
                                          m=self.audio_channel_size)
-        # print(f'input shape: {x.shape}')
+        # logger.info(f'input shape: {x.shape}')
         y = model(x)
-        # print(f'output shape: {y.shape}')
+        # logger.info(f'output shape: {y.shape}')
 
         optimizer.zero_grad()
         loss = ops.softmax_loss_fn(y, cx, self.receptive_field_size,
@@ -47,24 +51,24 @@ def train(model,
 
     saved_epoch = 0
 
-    print("checking for existing checkpointed model ...")
+    logger.info("checking for existing checkpointed model ...")
     if os.path.exists(checkpt_path):
         checkpoint = torch.load(checkpt_path)
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         saved_epoch = checkpoint['epoch']
         # saved_epoch_loss = checkpoint['loss']
-        print(f"loaded checkpoint model at epoch {saved_epoch}")
+        logger.info(f"loaded checkpoint model at epoch {saved_epoch}")
     else:
-        print("no checkpointed model found.")
+        logger.info("no checkpointed model found.")
 
     model.train()
-    print("training ...")
+    logger.info("training ...")
     for epoch in range(nepochs):
         for i, audio_sample in enumerate(dataset):
             loss_value = stepOp.step(optimizer, model, audio_sample)
 
-            print(f'(epoch = {epoch}) loss: {loss_value}')
+            logger.info(f'(epoch = {epoch}) loss: {loss_value}')
 
             if epoch > 10**5:
                 break
@@ -76,8 +80,8 @@ def train(model,
                     'loss': loss_value,
                 }, checkpt_path
                 )
-                print(f"saved checkpoint at epoch {epoch + saved_epoch}")
-                print(f'saving model to {model_save_path}...')
+                logger.info(f"saved checkpoint at epoch {epoch + saved_epoch}")
+                logger.info(f'saving model to {model_save_path}...')
                 torch.save(model.state_dict(), model_save_path)
 
 
@@ -120,5 +124,5 @@ def train_stack_ar(model, data, loss_type):
             epoch_loss += loss.item()
             optimizer.step()
         if epoch % 100 == 0:
-            print(f'epoch loss: {epoch_loss}')
+            logger.info(f'epoch loss: {epoch_loss}')
 

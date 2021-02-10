@@ -1,8 +1,12 @@
 import random
 from enum import Enum
+import logging
 
 import torch
 import torchaudio
+
+
+logger = logging.getLogger(__name__)
 
 def partial_derivative(y, x, i, j):
     """
@@ -43,13 +47,13 @@ def download_sample_audio(cutoff=None):
      by thousands of different people
      ref: https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html
      """
-    print('downloading sample audio dataset ....')
+    logger.info('downloading sample audio dataset ....')
     speech_commands = torchaudio.datasets.SPEECHCOMMANDS('.', download=True)
     data_loader = torch.utils.data.DataLoader(speech_commands,
                                               batch_size=1,
                                               shuffle=True)
 
-    print('finished downloading sample audio dataset.')
+    logger.info('finished downloading sample audio dataset.')
     if cutoff is not None:
         mini_data_loader = []
         for i, e in enumerate(data_loader):
@@ -157,7 +161,7 @@ def softmax_loss_fn(output, input, k, show_match_fraction=False):
     loss_fn = torch.nn.CrossEntropyLoss()
     if show_match_fraction:
         fraction_matched = match_fraction(loss_output, loss_input)
-        print(f'matched for loss on '
+        logger.info(f'matched for loss on '
               f'{fraction_matched * 100}% of quantized encoding values')
     return loss_fn(loss_output, loss_input)
 
