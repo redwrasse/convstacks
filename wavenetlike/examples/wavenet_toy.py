@@ -2,6 +2,17 @@ import dataset
 import train
 from models import build_wavenet_toy
 
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("debug.log"),
+        logging.StreamHandler()
+    ]
+)
+
 
 def wavenet_toy_example():
 

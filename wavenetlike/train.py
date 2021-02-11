@@ -41,8 +41,12 @@ def train(model,
           learning_rate=1e-3,
           nepochs=10**5):
 
-    checkpt_path = "./checkpoint"
-    model_save_path = "./model"
+    train_artifacts_dir = os.path.join(os.curdir, 'trainartifacts')
+    if not os.path.exists(train_artifacts_dir):
+        os.mkdir(train_artifacts_dir)
+
+    checkpt_path = os.path.join(train_artifacts_dir, "checkpoint")
+    model_save_path = os.path.join(train_artifacts_dir, "model")
 
     learning_rate = learning_rate
     optimizer = torch.optim.SGD(model.parameters(),
