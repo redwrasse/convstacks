@@ -39,7 +39,8 @@ class WavenetStepOp:
 def train(model,
           dataset,
           learning_rate=1e-3,
-          nepochs=10**5):
+          nepochs=10**5,
+          epoch_save_freq=2):
 
     train_artifacts_dir = os.path.join(os.curdir, 'trainartifacts')
     if not os.path.exists(train_artifacts_dir):
@@ -68,25 +69,30 @@ def train(model,
 
     model.train()
     logger.info("training ...")
+
     for epoch in range(nepochs):
+        epoch_loss = 0.
+        n_samples = 0.
         for i, audio_sample in enumerate(dataset):
             loss_value = stepOp.step(optimizer, model, audio_sample)
+            epoch_loss += loss_value
+            n_samples += 1
+        epoch_loss /= n_samples
+        logger.info(f'(epoch = {epoch}) epoch loss: {epoch_loss}')
 
-            logger.info(f'(epoch = {epoch}) loss: {loss_value}')
-
-            if epoch > 10**5:
-                break
-            if epoch % 2 == 0:
-                torch.save({
-                    'epoch': epoch + saved_epoch,
-                    'model_state_dict': model.state_dict(),
-                    'optimizer_state_dict': optimizer.state_dict(),
-                    'loss': loss_value,
-                }, checkpt_path
-                )
-                logger.info(f"saved checkpoint at epoch {epoch + saved_epoch}")
-                logger.info(f'saving model to {model_save_path}...')
-                torch.save(model.state_dict(), model_save_path)
+        if epoch > nepochs:
+            break
+        if epoch % epoch_save_freq == 0:
+            torch.save({
+                'epoch': epoch + saved_epoch,
+                'model_state_dict': model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'loss': epoch_loss
+            }, checkpt_path
+            )
+            logger.info(f"saved checkpoint at epoch {epoch + saved_epoch}")
+            logger.info(f'saving model to {model_save_path}...')
+            torch.save(model.state_dict(), model_save_path)
 
 
 def train_stack_ar(model, data, loss_type):

@@ -8,6 +8,7 @@ import torchaudio
 
 logger = logging.getLogger(__name__)
 
+
 def partial_derivative(y, x, i, j):
     """
     computes del y_i del x_j: partial derivative of y_i wrt x_j
@@ -161,7 +162,7 @@ def softmax_loss_fn(output, input, k, show_match_fraction=False):
     loss_fn = torch.nn.CrossEntropyLoss()
     if show_match_fraction:
         fraction_matched = match_fraction(loss_output, loss_input)
-        logger.info(f'matched for loss on '
+        logger.debug(f'matched for loss on '
               f'{fraction_matched * 100}% of quantized encoding values')
     return loss_fn(loss_output, loss_input)
 
