@@ -8,7 +8,31 @@ from wavenetlike.ops import partial_derivative, ar2_process, \
 class TestOps(unittest.TestCase):
 
     def test_partial_derivative(self):
-        pass
+        # input length and kernel size
+        n, k = 10, 3
+        x = torch.randn(1, 1, n)
+        x.requires_grad = True
+        layer = torch.nn.Conv1d(
+            in_channels=1,
+            out_channels=1,
+            kernel_size=k
+        )
+        layer.weight = torch.nn.Parameter(torch.ones_like(layer.weight))
+        y = layer(x)
+        assert (y.shape[
+                    2] == 8), 'standard convolution output should be of length n - k + 1'
+        for i in range(n - k + 1):
+            for j in range(n):
+                # nonzero values should be for which w_{i + k - j -1}
+                # is nonzero, eg i + k - j - 1 = 0, ..., k - 1 (see notes at top)
+                pd = partial_derivative(y, x, i, j)
+                in_range = (i - j + k - 1 >= 0) and (i - j + k - 1 <= k - 1)
+                if in_range:
+                    assert (
+                                pd == 1.0), 'unexpected standard convolution partial derivative'
+                else:
+                    assert (
+                                pd == 0.0), 'unexpected standard convolution partial derivative'
 
     def test_waveform_to_categorical(self):
         example_input = torch.clamp(torch.randn(size=(5, 1, 4)),
