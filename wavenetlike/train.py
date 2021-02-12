@@ -6,7 +6,7 @@ import torch
 import os
 import logging
 
-import ops
+import wavenetlike.ops as ops
 
 
 logger = logging.getLogger(__name__)

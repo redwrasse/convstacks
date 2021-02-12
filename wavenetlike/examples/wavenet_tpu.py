@@ -1,8 +1,8 @@
 # examples.py
 
-from models import build_wavenet
-import constants
-import ops
+from wavenetlike.models import build_wavenet
+import wavenetlike.constants as constants
+import wavenetlike.ops as ops
 import os
 import torch
 import torch_xla

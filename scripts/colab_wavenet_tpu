@@ -5,4 +5,5 @@ VERSION = "nightly"  #@param ["1.5" , "20200325", "nightly"]
 !pip install git+git://github.com/pytorch/audio
 
 !git clone https://github.com/redwrasse/wavenetlike.git
-!python3 wavenetlike/wavenetlike/examples/wavenet_tpu.py
+!cd wavenetlike
+!python3 -m wavenetlike.examples.wavenet_tpu
