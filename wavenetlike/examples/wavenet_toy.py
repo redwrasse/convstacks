@@ -21,7 +21,7 @@ def wavenet_toy_example():
     data = dataset.SpeechCommands(cutoff=5).get_dataset()
     train.train(model,
                 data,
-                epoch_save_freq=20)
+                epoch_save_freq=5)
 
 
 if __name__ == "__main__":
