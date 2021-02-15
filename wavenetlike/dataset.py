@@ -1,5 +1,5 @@
 # dataset.py
-import ops
+import wavenetlike.ops as ops
 
 
 class Dataset:

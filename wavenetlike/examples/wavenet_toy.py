@@ -1,6 +1,7 @@
-import dataset
-import train
-from models import build_wavenet_toy
+import wavenetlike.dataset as dataset
+import wavenetlike.train as train
+from wavenetlike.models import build_wavenet_toy
+
 
 import logging
 

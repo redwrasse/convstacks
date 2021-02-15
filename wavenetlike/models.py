@@ -2,10 +2,10 @@
 """
     models and model structures
 """
-import building_blocks
-import constants
+import wavenetlike.building_blocks as building_blocks
+import wavenetlike.constants as constants
 
-from building_blocks import WavenetLike
+from wavenetlike.building_blocks import WavenetLike
 
 
 def build_wavenet_like(audio_channel_size,
