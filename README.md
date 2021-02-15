@@ -29,7 +29,7 @@ are of primary interest
 * `Delta` := receptive field length of the network.
 
 
-![](./dilated.png)
+![](./imgs/dilated.png)
 
 At its core Wavenet-like models are just about combining increasingly dilated convolutions to generate
 autoregressive models with large `Delta` and small  `gamma`. The rest are possible architectural tricks like
@@ -97,6 +97,8 @@ See [examples](./wavenetlike/examples) directory for scripts.
 ```
 
 * A toy Wavenet model (fewer parameters and a mu-quantization of 10 rather than 256) achieves ~50% training accuracy in a minute on the [Speech Commands](https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html) dataset. Of course, its predictions with be commensurably coarse.
+
+![](./imgs/wavenettoyloss.png)
 
 ```python
 
