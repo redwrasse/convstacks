@@ -3,6 +3,7 @@
     training loops
 """
 import torch
+from torch.utils.tensorboard import SummaryWriter
 import os
 import logging
 
@@ -18,7 +19,7 @@ class WavenetStepOp:
         self.audio_channel_size = audio_channel_size
         self.receptive_field_size = receptive_field_size
 
-    def step(self, optimizer, model, audio_sample):
+    def step(self, optimizer, model, audio_sample, epoch, writer=None):
         waveform, sample_rate, labels1, labels2, labels3 = audio_sample
         x = ops.waveform_to_input(waveform,
                                   m=self.audio_channel_size)
@@ -31,6 +32,10 @@ class WavenetStepOp:
         optimizer.zero_grad()
         loss = ops.softmax_loss_fn(y, cx, self.receptive_field_size,
                                    show_match_fraction=True)
+        fmatched = ops.match_fraction(y, cx, self.receptive_field_size)
+        if writer:
+            writer.add_scalar("Fraction matched/train", fmatched, epoch)
+        logger.info(f'fraction matched: {fmatched * 100}%')
         loss.backward()
         optimizer.step()
         return loss.item()
@@ -41,6 +46,8 @@ def train(model,
           learning_rate=1e-3,
           nepochs=10**5,
           epoch_save_freq=2):
+
+    writer = SummaryWriter()
 
     train_artifacts_dir = os.path.join(os.curdir, 'trainartifacts')
     if not os.path.exists(train_artifacts_dir):
@@ -74,11 +81,14 @@ def train(model,
         epoch_loss = 0.
         n_samples = 0.
         for i, audio_sample in enumerate(dataset):
-            loss_value = stepOp.step(optimizer, model, audio_sample)
+            loss_value = stepOp.step(optimizer, model, audio_sample, epoch,
+                                     writer)
             epoch_loss += loss_value
             n_samples += 1
         epoch_loss /= n_samples
         logger.info(f'(epoch = {epoch}) epoch loss: {epoch_loss}')
+
+        writer.add_scalar("Loss/train", epoch_loss, epoch)
 
         if epoch > nepochs:
             break
@@ -98,6 +108,8 @@ def train(model,
 def train_stack_ar(model, data, loss_type):
 
     # train an autoregressive model on the data, using the stack
+
+    writer = SummaryWriter()
 
     def make_batched(data, batch_size):
         batched = []
@@ -135,4 +147,6 @@ def train_stack_ar(model, data, loss_type):
             optimizer.step()
         if epoch % 100 == 0:
             logger.info(f'epoch loss: {epoch_loss}')
+        # log epoch loss to tensorboard
+        writer.add_scalar('Loss/train', epoch_loss, epoch)
 

@@ -161,13 +161,21 @@ def softmax_loss_fn(output, input, k, show_match_fraction=False):
     assert loss_input.shape[1:] == (N,)
     loss_fn = torch.nn.CrossEntropyLoss()
     if show_match_fraction:
-        fraction_matched = match_fraction(loss_output, loss_input)
+        fraction_matched = __match_fraction_internal(loss_output, loss_input)
         logger.debug(f'matched for loss on '
               f'{fraction_matched * 100}% of quantized encoding values')
     return loss_fn(loss_output, loss_input)
 
 
-def match_fraction(loss_output, loss_input):
+def match_fraction(output, input, k):
+    loss_output = output[:, :, k - 1:-1]
+    loss_input = torch.squeeze(input[:, :, k:],
+                               dim=1)
+    fraction_matched = __match_fraction_internal(loss_output, loss_input)
+    return fraction_matched
+
+
+def __match_fraction_internal(loss_output, loss_input):
     loss_output_categorical = logit_to_categorical(loss_output)  # for debugging
     if_true = torch.sum((loss_output_categorical == loss_input).float())
     if_false = torch.sum((loss_output_categorical != loss_input).float())
