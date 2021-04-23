@@ -3,7 +3,7 @@
 from wavenetlike.models import build_wavenet
 import wavenetlike.constants as constants
 import wavenetlike.ops as ops
-from wavenetlike.dataset import Dataset
+from wavenetlike.dataset import TorchAudioDataset
 import os
 import torch
 import torch_xla
@@ -22,7 +22,7 @@ def wavenet_example_tpu():
     checkpt_path = "./checkpoint"
     model_save_path = "./model"
 
-    dataset = Dataset("SPEECHCOMMANDS", cutoff=2)
+    dataset = TorchAudioDataset("SPEECHCOMMANDS", cutoff=2)
     logger.info(f"loaded audio samples to train on.")
 
     learning_rate = 1e-3

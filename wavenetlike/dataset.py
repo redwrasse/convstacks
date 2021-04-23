@@ -9,12 +9,11 @@ logger = logging.getLogger(__name__)
 
 
 DATASETS = {
-
+  
     #"CMUARCTIC": torchaudio.datasets.CMUARCTIC,
     "COMMONVOICE": torchaudio.datasets.COMMONVOICE,
     #"GTZAN": torchaudio.datasets.GTZAN,
     "SPEECHCOMMANDS": torchaudio.datasets.SPEECHCOMMANDS
-
 }
 
 
@@ -33,8 +32,15 @@ def load_dataset(dataset, batch_size=1, shuffle=True):
 
 class Dataset:
 
+    def __iter__(self):
+        pass
+
+
+class TorchAudioDataset(Dataset):
+
     def __init__(self, key, cutoff=None,
                  batch_size=1, shuffle=True):
+        super(TorchAudioDataset, self).__init__()
         self.key = key
         self.cutoff = cutoff
         self.batch_size = batch_size
@@ -57,11 +63,12 @@ class Dataset:
 
 class AR2(Dataset):
 
-    def __init__(self, cutoff=1000):
-        super(AR2, self).__init__("AR2")
-        a, b = -0.4, 0.5
-        x0, x1 = 50, 60
-        self.ar2 = ops.ar2_process(a, b, x0, x1)
+    def __init__(self,
+                 params=(-0.4, 0.5),
+                 init_values=(50, 60),
+                 cutoff=1000):
+        super(AR2, self).__init__()
+        self.ar2 = ops.ar2_process(params, init_values)
         self.cutoff = cutoff
         # set a cutoff if none
         if not self.cutoff: self.cutoff = 100
