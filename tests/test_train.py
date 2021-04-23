@@ -11,6 +11,7 @@ class TestTrain(unittest.TestCase):
         self.dataset = Dataset(key="SPEECHCOMMANDS",
                           cutoff=5)
 
+    @unittest.skip("too expensive")
     def test_train(self):
         train.train(self.model,
                     self.dataset,

@@ -2,13 +2,14 @@
 
 import torch
 import unittest
-import wavenetlike.building_blocks as building_blocks
+
+from wavenetlike.wavenetlike import WavenetLike
 
 
 class TestBuildingBlocks(unittest.TestCase):
 
     def setUp(self):
-        self.example_stack = building_blocks.WavenetLike(
+        self.example_stack = WavenetLike(
             audio_channel_size=10,
             filter_gate_kernel_size=2,
             dilation_rate=2,

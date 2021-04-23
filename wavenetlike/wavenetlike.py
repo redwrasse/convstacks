@@ -1,131 +1,11 @@
-# building_blocks.py
 
 import torch
-from torch.nn import functional as F
 
+from gae import GatedActivationUnit
+from lpconv import LpConv
 
-class LpConv(torch.nn.Conv1d):
-    """
-    A left-padded convolution
-    """
-
-    def __init__(self,
-                 in_channels,
-                 out_channels,
-                 kernel_size,
-                 stride=1,
-                 padding=0,
-                 dilation=1,
-                 groups=1,
-                 bias=False):  # no convolution biases in wavenet
-        super(LpConv, self).__init__(
-            in_channels=in_channels,
-            out_channels=out_channels,
-            kernel_size=kernel_size,
-            stride=stride,
-            padding=padding,
-            dilation=dilation,
-            groups=groups,
-            bias=bias
-        )
-
-        # from pytorch docs: output length =
-        # (input length + 2 * padding - dilation * (kernel_size - 1) -1 ) / stride + 1
-
-    def forward(self, x):
-        input_length = x.shape[-1]
-        # note self.padding parameter is conv1d double
-        #  padding parameter, not our padding
-        output_length = \
-            int((input_length + 2 * self.padding[0] - self.dilation[0]*(self.kernel_size[0]-1) - 1) / self.stride[0] + 1)
-        # set additional padding to ensure
-        # output length = input length
-        __padding = input_length - output_length
-        lp_x = F.pad(x,
-                     pad=[__padding, 0],
-                     mode='constant',
-                     value=0)
-        return super(LpConv, self).forward(lp_x)
-
-
-class GatedActivationUnit(torch.nn.Module):
-
-    """ Gated activation unit from wavenet """
-
-    def __init__(self):
-        super(GatedActivationUnit, self).__init__()
-
-    def forward(self, wf, wg):
-        return torch.tanh(wf) * torch.sigmoid(wg)
-
-
-class ResidualBlock(torch.nn.Module):
-
-    """ Residual block: transforms a layer F(x) to F(x) + x """
-
-    def __init__(self, model):
-        super(ResidualBlock, self).__init__()
-        self.model = model
-
-    def forward(self, x):
-        out = x + self.model(x)
-        return out
-
-
-class OneConv(torch.nn.Conv1d):
-
-    """ a '1 conv' """
-
-    def __init__(self,
-                 in_channels,
-                 out_channels,
-                 bias=True):  # bias needed?
-        super(OneConv, self).__init__(
-            in_channels=in_channels,
-            out_channels=out_channels,
-            kernel_size=1,
-            bias=bias
-        )
-
-    def forward(self, x):
-        return super(OneConv, self).forward(x)
-
-
-class ReluOneConv(torch.nn.Module):
-    """ relu followed by one conv for skip post-processing """
-
-    def __init__(self, in_channels, out_channels):
-        super(ReluOneConv, self).__init__()
-        self.one_conv = OneConv(
-            in_channels=in_channels,
-            out_channels=out_channels
-        )
-
-    def forward(self, x):
-        relu_x = torch.relu(x)
-        out = self.one_conv(relu_x)
-        return out
-
-
-class SkipPostProcessing(torch.nn.Module):
-
-    """ two compositions of relu followed by 1 conv"""
-
-    def __init__(self, in_channels, intermediate_channels, out_channels):
-        super(SkipPostProcessing, self).__init__()
-        self.relu_conv_a = ReluOneConv(
-            in_channels=in_channels,
-            out_channels=intermediate_channels
-        )
-        self.relu_conv_b = ReluOneConv(
-            in_channels=intermediate_channels,
-            out_channels=out_channels
-        )
-
-    def forward(self, x):
-        out_a = self.relu_conv_a(x)
-        out_b = self.relu_conv_b(out_a)
-        return out_b
+from oneconv import OneConv
+from skippp import SkipPostProcessing
 
 
 class WavenetLike(torch.nn.Module):
@@ -223,4 +103,3 @@ class WavenetLikeLayer(torch.nn.Module):
         skip_out = self.skip_one_conv(z)
         dense_out = residual_one_conv_out + x
         return dense_out, skip_out
-

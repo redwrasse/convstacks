@@ -1,5 +1,5 @@
 import unittest
-from wavenetlike.building_blocks import LpConv
+from lpconv import LpConv
 import torch
 
 
