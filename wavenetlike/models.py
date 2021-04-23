@@ -2,10 +2,9 @@
 """
     models and model structures
 """
-import wavenetlike.building_blocks as building_blocks
+import wavenetlike.lpconv as lpconv
 import wavenetlike.constants as constants
-
-from wavenetlike.building_blocks import WavenetLike
+from wavenetlike.wavenetlike import WavenetLike
 
 
 def build_wavenet_like(audio_channel_size,
@@ -57,7 +56,7 @@ def build_wavenet_toy():
 
 
 def build_ar2():
-    model = building_blocks.LpConv(
+    model = lpconv.LpConv(
         in_channels=1,
         out_channels=1,
         kernel_size=2,
