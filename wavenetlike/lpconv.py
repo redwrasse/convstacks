@@ -5,6 +5,11 @@ from torch.nn import functional as F
 class LpConv(torch.nn.Conv1d):
     """
     A left-padded convolution
+    
+    
+    Ref. pytorch docs
+     output length =
+        # (input length + 2 * padding - dilation * (kernel_size - 1) -1 ) / stride + 1
     """
 
     def __init__(self,
@@ -26,16 +31,14 @@ class LpConv(torch.nn.Conv1d):
             groups=groups,
             bias=bias
         )
-
-        # from pytorch docs: output length =
-        # (input length + 2 * padding - dilation * (kernel_size - 1) -1 ) / stride + 1
-
+       
     def forward(self, x):
         input_length = x.shape[-1]
         # note self.padding parameter is conv1d double
         #  padding parameter, not our padding
         output_length = \
-            int((input_length + 2 * self.padding[0] - self.dilation[0]*(self.kernel_size[0]-1) - 1) / self.stride[0] + 1)
+            int((input_length + 2 * self.padding[0] - self.dilation[0] * 
+                 (self.kernel_size[0] - 1) - 1) / self.stride[0] + 1)
         # set additional padding to ensure
         # output length = input length
         __padding = input_length - output_length

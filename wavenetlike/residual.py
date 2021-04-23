@@ -1,4 +1,4 @@
-from torch import __init__
+import torch
 
 
 class ResidualBlock(torch.nn.Module):

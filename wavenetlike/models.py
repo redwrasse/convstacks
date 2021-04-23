@@ -4,7 +4,7 @@
 """
 import lpconv
 import wavenetlike.constants as constants
-from wavenetlike.wavenetlike import WavenetLike, WavenetLikeLayer
+from wavenetlike.wavenetlike import WavenetLike
 
 
 def build_wavenet_like(audio_channel_size,
