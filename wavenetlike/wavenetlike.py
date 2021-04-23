@@ -1,11 +1,10 @@
 
 import torch
 
-from gae import GatedActivationUnit
-from lpconv import LpConv
-
-from oneconv import OneConv
-from skippp import SkipPostProcessing
+from wavenetlike.gae import GatedActivationUnit
+from wavenetlike.lpconv import LpConv
+from wavenetlike.oneconv import OneConv
+from wavenetlike.skippp import SkipPostProcessing
 
 
 class WavenetLike(torch.nn.Module):

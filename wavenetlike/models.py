@@ -2,7 +2,7 @@
 """
     models and model structures
 """
-import lpconv
+import wavenetlike.lpconv as lpconv
 import wavenetlike.constants as constants
 from wavenetlike.wavenetlike import WavenetLike
 
