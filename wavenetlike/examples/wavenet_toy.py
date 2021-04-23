@@ -1,7 +1,6 @@
-import wavenetlike.dataset as dataset
 import wavenetlike.train as train
 from wavenetlike.models import build_wavenet_toy
-
+from wavenetlike.dataset import Dataset
 
 import logging
 
@@ -18,9 +17,10 @@ logging.basicConfig(
 def wavenet_toy_example():
 
     model = build_wavenet_toy()
-    data = dataset.SpeechCommands(cutoff=5).get_dataset()
+    dataset = Dataset(key="SPEECHCOMMANDS",
+                      cutoff=5)
     train.train(model,
-                data,
+                dataset,
                 epoch_save_freq=5)
 
 

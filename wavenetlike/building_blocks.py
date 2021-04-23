@@ -34,10 +34,12 @@ class LpConv(torch.nn.Conv1d):
 
     def forward(self, x):
         input_length = x.shape[-1]
-        # note self.padding parameter is conv1d double padding parameter, not our padding
+        # note self.padding parameter is conv1d double
+        #  padding parameter, not our padding
         output_length = \
             int((input_length + 2 * self.padding[0] - self.dilation[0]*(self.kernel_size[0]-1) - 1) / self.stride[0] + 1)
-        # set additional padding to ensure output length = input length
+        # set additional padding to ensure
+        # output length = input length
         __padding = input_length - output_length
         lp_x = F.pad(x,
                      pad=[__padding, 0],

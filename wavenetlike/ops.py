@@ -34,35 +34,10 @@ def ar2_process(a, b, x0, x1):
     a, b parameters
     x0, x1 first two sequence values
     """
-
-    x2 = b * x0 + a * x1
     while True:
-        x0 = x1
-        x1 = x2
         x2 = b * x0 + a * x1 + random.gauss(0, 10 ** -5)
-        yield x2
-
-
-def download_sample_audio(cutoff=None):
-    """65,000 one-second long utterances of 30 short words,
-     by thousands of different people
-     ref: https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html
-     """
-    logger.info('downloading sample audio dataset ....')
-    speech_commands = torchaudio.datasets.SPEECHCOMMANDS('.', download=True)
-    data_loader = torch.utils.data.DataLoader(speech_commands,
-                                              batch_size=1,
-                                              shuffle=True)
-
-    logger.info('finished downloading sample audio dataset.')
-    if cutoff is not None:
-        mini_data_loader = []
-        for i, e in enumerate(data_loader):
-            mini_data_loader.append(e)
-            if i > cutoff:
-                return mini_data_loader
-    else:
-        return data_loader
+        x0, x1 = x1, x2
+        yield x0
 
 
 def mu_law_encoding(

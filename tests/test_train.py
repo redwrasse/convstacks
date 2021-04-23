@@ -1,18 +1,19 @@
 import unittest
 import wavenetlike.train as train
 from wavenetlike.models import build_wavenet_toy
-import wavenetlike.dataset as dataset
+from wavenetlike.dataset import Dataset
 
 
 class TestTrain(unittest.TestCase):
 
     def setUp(self):
         self.model = build_wavenet_toy()
-        self.data = dataset.SpeechCommands(cutoff=5).get_dataset()
+        self.dataset = Dataset(key="SPEECHCOMMANDS",
+                          cutoff=5)
 
     def test_train(self):
         train.train(self.model,
-                    self.data,
+                    self.dataset,
                     nepochs=1)
 
 
