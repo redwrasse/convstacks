@@ -9,9 +9,9 @@ logger = logging.getLogger(__name__)
 
 
 DATASETS = {
-    "CMUARCTIC": torchaudio.datasets.CMUARCTIC,
-    "COMMONVOICE": torchaudio.datasets.COMMONVOICE,
-    "GTZAN": torchaudio.datasets.GTZAN,
+#    "CMUARCTIC": torchaudio.datasets.CMUARCTIC,
+#    "COMMONVOICE": torchaudio.datasets.COMMONVOICE,
+ #   "GTZAN": torchaudio.datasets.GTZAN,
     "SPEECHCOMMANDS": torchaudio.datasets.SPEECHCOMMANDS
 }
 

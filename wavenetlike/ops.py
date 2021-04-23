@@ -34,11 +34,10 @@ def ar2_process(a, b, x0, x1):
     a, b parameters
     x0, x1 first two sequence values
     """
-
-    x2 = b * x0 + a * x1
     while True:
-        x0, x1, x2 = x1, x2, b * x0 + a * x1 + random.gauss(0, 10 ** -5)
-        yield x2
+        x2 = b * x0 + a * x1 + random.gauss(0, 10 ** -5)
+        x0, x1 = x1, x2
+        yield x0
 
 
 def mu_law_encoding(
