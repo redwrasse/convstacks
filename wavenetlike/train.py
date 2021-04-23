@@ -105,8 +105,7 @@ def train(model,
             torch.save(model.state_dict(), model_save_path)
 
 
-def train_stack_ar(model, data, loss_type):
-
+def train_stack_ar(model, dataset, loss_type):
     # train an autoregressive model on the data, using the stack
 
     writer = SummaryWriter()
@@ -126,7 +125,7 @@ def train_stack_ar(model, data, loss_type):
     n_epochs = 10**3
     batch_size = 5  # should actually set to some multiple of the
     # effective kernel length
-    batched = make_batched(data, batch_size)
+    batched = make_batched(dataset, batch_size)
     n_batches = batched.shape[1]
     k = 2  # effective kernel length
 

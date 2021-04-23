@@ -3,6 +3,7 @@
 from wavenetlike.models import build_wavenet
 import wavenetlike.constants as constants
 import wavenetlike.ops as ops
+from wavenetlike.dataset import Dataset
 import os
 import torch
 import torch_xla
@@ -21,9 +22,8 @@ def wavenet_example_tpu():
     checkpt_path = "./checkpoint"
     model_save_path = "./model"
 
-    num_training_clips = 2
-    data = ops.download_sample_audio(cutoff=num_training_clips)
-    logger.info(f"loaded {num_training_clips} audio samples to train on.")
+    dataset = Dataset("SPEECHCOMMANDS", cutoff=2)
+    logger.info(f"loaded audio samples to train on.")
 
     learning_rate = 1e-3
     optimizer = torch.optim.SGD(model.parameters(),
@@ -48,7 +48,7 @@ def wavenet_example_tpu():
     model.train()
     logger.info("training ...")
     for epoch in range(10**5):
-        for i, audio_sample in enumerate(data):
+        for i, audio_sample in enumerate(dataset):
             waveform, sample_rate, labels1, labels2, labels3 = audio_sample
             x = ops.waveform_to_input(waveform, m=constants.WaveNetConstants.AUDIO_CHANNEL_SIZE).to(dev)
             cx = ops.waveform_to_categorical(waveform, m=constants.WaveNetConstants.AUDIO_CHANNEL_SIZE).to(dev)
