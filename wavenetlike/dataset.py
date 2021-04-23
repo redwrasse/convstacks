@@ -9,11 +9,10 @@ logger = logging.getLogger(__name__)
 
 
 DATASETS = {
-    # commented out datasets aren't present in this version
-    # of the torchaudio library (checked in unit test of test_dataset.py)
-#    "CMUARCTIC": torchaudio.datasets.CMUARCTIC,
-   "COMMONVOICE": torchaudio.datasets.COMMONVOICE,
- #   "GTZAN": torchaudio.datasets.GTZAN,
+  
+    #"CMUARCTIC": torchaudio.datasets.CMUARCTIC,
+    "COMMONVOICE": torchaudio.datasets.COMMONVOICE,
+    #"GTZAN": torchaudio.datasets.GTZAN,
     "SPEECHCOMMANDS": torchaudio.datasets.SPEECHCOMMANDS
 }
 
