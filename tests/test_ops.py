@@ -1,6 +1,6 @@
 import unittest
 import torch
-from wavenetlike.ops import partial_derivative, ar2_process, \
+from wavenetlike.ops import partial_derivative, \
     waveform_to_input, waveform_to_categorical, \
     mse_loss_fn
 

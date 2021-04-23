@@ -1,6 +1,6 @@
 import torch
 
-from oneconv import ReluOneConv
+from wavenetlike.oneconv import ReluOneConv
 
 
 class SkipPostProcessing(torch.nn.Module):
