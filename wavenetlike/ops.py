@@ -24,7 +24,7 @@ def partial_derivative(y, x, i, j):
     return dy_dx[0].item()
 
 
-def ar2_process(a, b, x0, x1):
+def ar2_process(params, init_values):
     """
     AR(2) process x_t = a x_t-1 + b xt-2 + noise
     stationary if a in [-2, 2], b in [-1, 1]
@@ -34,6 +34,8 @@ def ar2_process(a, b, x0, x1):
     a, b parameters
     x0, x1 first two sequence values
     """
+    a, b = params
+    x0, x1 = init_values
     while True:
         x2 = b * x0 + a * x1 + random.gauss(0, 10 ** -5)
         x0, x1 = x1, x2
