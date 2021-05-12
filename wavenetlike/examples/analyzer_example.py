@@ -1,7 +1,6 @@
 from wavenetlike.analyzers import DatasetAnalyzer
 
-from wavenetlike.dataset import get_dataset,\
-    TorchAudioDataset
+from wavenetlike.dataset import TorchAudioDataset
 
 
 def analyzer_example():
@@ -10,6 +9,5 @@ def analyzer_example():
     data_analyzer.analyze_dataset()
 
 
-
-
-analyzer_example()
+if __name__ == "__main__":
+    analyzer_example()
