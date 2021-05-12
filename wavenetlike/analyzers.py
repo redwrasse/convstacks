@@ -49,7 +49,12 @@ class DatasetAnalyzer:
            :param dataset:
            :return:
         """
-        pass
+        logger.info("analyzing dataset ...")
+        # todo("analyzer")
+        for e in self.dataset:
+            pass
+
+
 
 
 

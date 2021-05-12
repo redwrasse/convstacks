@@ -52,7 +52,6 @@ class TorchAudioDataset(Dataset):
         loader = load_dataset(self.dataset,
                               self.batch_size,
                               self.shuffle)
-        if not self.cutoff: return loader
         for i, e in enumerate(loader):
             if i == self.cutoff: return
             yield e
