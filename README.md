@@ -119,6 +119,23 @@ See [examples](./wavenetlike/examples) directory for scripts.
 
 ```
 
+* Example wip basic dataset analyzer
+```python
+
+dataset = TorchAudioDataset(key="SPEECHCOMMANDS",
+                            cutoff=None,
+                            batch_size=1)
+data_analyzer = TorchAudioDatasetAnalyzer(dataset)
+data_analyzer.analyze_dataset()
+
+# current stdout
+analyzing dataset ...
+downloading dataset ....
+finished analyzing dataset
+dataset analysis: {'sample_rate': 16000, 'num_channels': 1, 'min_waveform_len': 10240, 'max_waveform_len': 16000}
+
+```
+
 ### To Do
 
 This library is a work in progress. Some future tasks
