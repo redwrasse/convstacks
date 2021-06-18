@@ -3,7 +3,6 @@ from enum import Enum
 import logging
 
 import torch
-import torchaudio
 
 
 logger = logging.getLogger(__name__)
