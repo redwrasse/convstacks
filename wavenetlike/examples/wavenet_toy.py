@@ -3,7 +3,6 @@ from wavenetlike.models import build_wavenet_toy
 from wavenetlike.dataset import TorchAudioDataset
 
 
-
 def wavenet_toy_example():
 
     model = build_wavenet_toy()
