@@ -1,5 +1,5 @@
 import train_ar
-from wavenetlike.dataset import AR2
+from wavenetlike.datasetid import AR2
 import train
 from models import build_ar2
 
