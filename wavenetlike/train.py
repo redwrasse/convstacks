@@ -16,15 +16,14 @@ logger = logging.getLogger(__name__)
 class Trainer:
     def __init__(self,
                  model,
-                 dataset,
+                 dataset_id,
                  optimizer=torch.optim.Adam,
                  learning_rate=0.0001,
                  weight_decay=0.0,
-                 nepochs=10**5,
                  epoch_save_freq=100):
 
         self.model = model
-        self.dataset = dataset
+        self.dataset_id = dataset_id
         self.optimizer = optimizer(
             params=self.model.parameters(),
             lr=learning_rate
@@ -32,7 +31,6 @@ class Trainer:
         self.dataloader = None
         self.learning_rate = learning_rate
         self.weight_decay = weight_decay
-        self.nepochs = nepochs
         self.epoch_save_freq = epoch_save_freq
 
         self.writer = SummaryWriter()
@@ -52,7 +50,13 @@ class Trainer:
             print('moving model to gpu')
             self.model.cuda()
 
-    def train(self):
+        self.use_cuda = use_cuda
+
+    def train(self,
+              batch_size=32,
+              epochs=10**5):
+
+        self.model.train()
 
         train_artifacts_dir = os.path.join(os.curdir, 'trainartifacts')
         if not os.path.exists(train_artifacts_dir):
@@ -79,11 +83,35 @@ class Trainer:
 
         logger.info("training ...")
 
+        num_workers = 8 if self.use_cuda else 0
+        dataset = self.dataset_id.get_dataset()
+        print(
+            f'setting num_workers to {num_workers} since use_cuda={self.use_cuda}')
+
+        # def collate_fn(batch):
+        #     res = []
+        #     mn_len = 10 ** 6
+        #     for tens, *rest in batch:
+        #         mn_len = min(mn_len, tens.shape[1])
+        #     for tens, *rest in batch:
+        #         res.append(tens[:, :mn_len])
+        #         # tens_fixed = tens[:, :mn_len]
+        #         # res.append((tens_fixed,) + tuple(rest))
+        #     stacked = torch.stack(res, 0)
+        #     return stacked
+
+        self.dataloader = torch.utils.data.DataLoader(dataset,
+                                                      batch_size=batch_size,
+                                                      shuffle=True,
+                                                      #collate_fn=collate_fn,
+                                                      num_workers=num_workers,
+                                                      pin_memory=False)
+
         j = 0
-        for epoch in range(self.nepochs):
+        for epoch in range(epochs):
             epoch_loss = 0.
             n_samples = 0.
-            for i, audio_sample in enumerate(self.dataset):
+            for audio_sample in iter(self.dataloader):
                 loss_value = stepOp.step(self.optimizer, self.model, audio_sample, j,
                                          self.writer)
                 epoch_loss += loss_value
@@ -95,7 +123,7 @@ class Trainer:
             self.writer.add_scalar("Loss/train", epoch_loss, epoch)
             self.writer.flush()
 
-            if epoch > self.nepochs:
+            if epoch > epochs:
                 break
             if epoch % self.epoch_save_freq == 0:
                 torch.save({
@@ -116,8 +144,9 @@ class WavenetStepOp:
         self.audio_channel_size = audio_channel_size
         self.receptive_field_size = receptive_field_size
 
-    def step(self, optimizer, model, audio_sample, step_j, writer=None):
-        waveform, sample_rate, labels1, labels2, labels3 = audio_sample
+    def step(self, optimizer, model, audio_sample, step_j, writer):
+        waveform, *rest = audio_sample
+        #waveform, sample_rate, labels1, labels2, labels3 = audio_sample
         x = ops.waveform_to_input(waveform,
                                   m=self.audio_channel_size)
         cx = ops.waveform_to_categorical(waveform,
@@ -130,9 +159,12 @@ class WavenetStepOp:
         loss = ops.softmax_loss_fn(y, cx, self.receptive_field_size,
                                    show_match_fraction=True)
         fmatched = ops.match_fraction(y, cx, self.receptive_field_size)
-        if writer:
-            writer.add_scalar("Fraction matched/train", fmatched, step_j)
-        logger.info(f'fraction matched: {fmatched * 100}%')
+
+        writer.add_scalar("Fraction matched/train", fmatched, step_j)
+        writer.add_scalar("Loss/train", loss, step_j)
+        writer.flush()
+
+        logger.info(f'(j={step_j}) loss: {loss.item()} fraction matched: {fmatched * 100}%')
         loss.backward()
         optimizer.step()
         return loss.item()
