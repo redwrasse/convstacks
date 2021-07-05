@@ -102,7 +102,7 @@ def waveform_to_categorical(waveform, m):
 def waveform_to_input(waveform, m):
     assert waveform.shape[1] == 1, "expected single channel waveform"
     categorical = waveform_to_categorical(waveform, m)
-    z = torch.nn.functional.one_hot(categorical, m)
+    # z = torch.nn.functional.one_hot(categorical, m)
     #!! for the time being assume single channel so can squeeze dim=1 (can generalize later)
     return torch.squeeze(torch.nn.functional.one_hot(categorical, m),
                     dim=1).permute(0, 2, 1).float()
