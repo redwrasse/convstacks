@@ -88,22 +88,22 @@ class Trainer:
         print(
             f'setting num_workers to {num_workers} since use_cuda={self.use_cuda}')
 
-        # def collate_fn(batch):
-        #     res = []
-        #     mn_len = 10 ** 6
-        #     for tens, *rest in batch:
-        #         mn_len = min(mn_len, tens.shape[1])
-        #     for tens, *rest in batch:
-        #         res.append(tens[:, :mn_len])
-        #         # tens_fixed = tens[:, :mn_len]
-        #         # res.append((tens_fixed,) + tuple(rest))
-        #     stacked = torch.stack(res, 0)
-        #     return stacked
+        def collate_fn(batch):
+            res = []
+            mn_len = 10 ** 6
+            for tens, *rest in batch:
+                mn_len = min(mn_len, tens.shape[1])
+            for tens, *rest in batch:
+                res.append(tens[:, :mn_len])
+                # tens_fixed = tens[:, :mn_len]
+                # res.append((tens_fixed,) + tuple(rest))
+            stacked = torch.stack(res, 0)
+            return stacked
 
         self.dataloader = torch.utils.data.DataLoader(dataset,
                                                       batch_size=batch_size,
                                                       shuffle=True,
-                                                      #collate_fn=collate_fn,
+                                                      collate_fn=collate_fn,
                                                       num_workers=num_workers,
                                                       pin_memory=False)
 
@@ -145,7 +145,7 @@ class WavenetStepOp:
         self.receptive_field_size = receptive_field_size
 
     def step(self, optimizer, model, audio_sample, step_j, writer):
-        waveform, *rest = audio_sample
+        waveform = audio_sample
         #waveform, sample_rate, labels1, labels2, labels3 = audio_sample
         x = ops.waveform_to_input(waveform,
                                   m=self.audio_channel_size)

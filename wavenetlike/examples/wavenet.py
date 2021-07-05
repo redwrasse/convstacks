@@ -7,7 +7,7 @@ def wavenet_example():
     model = build_wavenet()
     dataset_id = TorchAudioDataSetId(key="SPEECHCOMMANDS")
     trainer = Trainer(model, dataset_id)
-    trainer.train(batch_size=1)
+    trainer.train(batch_size=5)
 
 
 if __name__ == "__main__":
