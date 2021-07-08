@@ -4,6 +4,8 @@
 
 **Note: This library is a work in progress for generalized wavenet-like architectures. To train the original Wavenet on the Speech Commands dataset, run this [script](wavenetlike/examples/wavenet.py), or [this one](wavenetlike/examples/wavenet_tpu.py) for TPUs. To access other library functionality currently work directly with source (see examples below). To train on [Colab](https://colab.research.google.com/) with TPUs use this [script](scripts/colab_wavenet_tpu).** 
 
+This library is built on the [Pytorch API](https://pytorch.org/docs/stable/index.html).
+
 ### Background
 A library for building wavenet-like models: generative auto-regressive models with large receptive fields. The canonical example is of course [Wavenet](https://arxiv.org/pdf/1609.03499.pdf) itself.
 
@@ -11,16 +13,18 @@ Wavenet is just one in a family of models providing long receptive fields with a
 
 As a first step this library just exposes the parameters of wavenet-type models: number of layers, dilation rate, internal channel size, etc. Nothing too special there. And those parameters can be altered by hyperparameter tuning. As a second step, a more ambitious goal, it makes sense to help specify/constrain these parameters based on the specific data being trained- its correlation lengths and desired resolution, for example. These constraints could then facilitate more efficient hyperparameter search. Two desired properties: should not train on white noise, should train with one layer on the ar(2) model.
 
-Formally this library is based off the fact that any data series`{x_i]` with an ordering relation and presumed translation invariance is amenable to a general framework for a 'causal' generative model
+
+
+
+### Concepts
+
+Any data series`{x_i]` with an ordering relation and presumed translation invariance is amenable to a general framework for a 'causal' generative model
 
 ```
 P(x_1, ...., x_n) = \prod_i P(x_i|x_i-n,...., x_i-1)                        
 min_{params} -log P(data; params)
 ```
 
-This library is built on the [Pytorch API](https://pytorch.org/docs/stable/index.html).
-
-### Concepts
 There are a large number of possible architecture choices and parameter tweaks, but a few
 are of primary interest
 
