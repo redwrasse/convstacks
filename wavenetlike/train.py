@@ -23,6 +23,7 @@ class Trainer:
                  epoch_save_freq=100):
 
         self.model = model
+        self.receptive_field_size = model.receptive_field_size
         self.dataset_id = dataset_id
         self.optimizer = optimizer(
             params=self.model.parameters(),
@@ -55,6 +56,9 @@ class Trainer:
     def train(self,
               batch_size=32,
               epochs=10**5):
+
+        logger.info(
+            f'training with batch size of {batch_size} for {epochs} epochs ..."')
 
         self.model.train()
 
