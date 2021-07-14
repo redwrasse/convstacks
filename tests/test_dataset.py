@@ -1,7 +1,7 @@
 import unittest
 import torchaudio
 
-import wavenetlike.dataset as dataset
+import wavenetlike.datasetid as dataset
 
 
 class TestDataset(unittest.TestCase):
@@ -13,3 +13,6 @@ class TestDataset(unittest.TestCase):
         """ check all torchaudio datasets actually exist """
         for attr in dataset.DATASETS:
             assert hasattr(torchaudio.datasets, attr)
+
+    def test_clean_lengths(self):
+        pass

@@ -86,7 +86,7 @@ def mu_law_decoding(
     if not x_mu.is_floating_point():
         x_mu = x_mu.to(torch.float)
     mu = torch.tensor(mu, dtype=x_mu.dtype)
-    x = ((x_mu) / mu) * 2 - 1.0
+    x = (x_mu / mu) * 2 - 1.0
     x = torch.sign(x) * (torch.exp(torch.abs(x) * torch.log1p(mu)) - 1.0) / mu
     return x
 
@@ -102,7 +102,7 @@ def waveform_to_categorical(waveform, m):
 def waveform_to_input(waveform, m):
     assert waveform.shape[1] == 1, "expected single channel waveform"
     categorical = waveform_to_categorical(waveform, m)
-    z = torch.nn.functional.one_hot(categorical, m)
+    # z = torch.nn.functional.one_hot(categorical, m)
     #!! for the time being assume single channel so can squeeze dim=1 (can generalize later)
     return torch.squeeze(torch.nn.functional.one_hot(categorical, m),
                     dim=1).permute(0, 2, 1).float()

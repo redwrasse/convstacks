@@ -1,0 +1,5 @@
+
+%load_ext tensorboard
+%tensorboard --logdir=wavenetlike/wavenetlike/examples/runs
+
+!git clone https://github.com/redwrasse/wavenetlike && cd wavenetlike && git fetch --all && git checkout some-refactor && pip install torchaudio && python -m wavenetlike.examples.wavenet

@@ -1,10 +1,12 @@
-
+import logging
 import torch
 
 from wavenetlike.gae import GatedActivationUnit
 from wavenetlike.lpconv import LpConv
 from wavenetlike.oneconv import OneConv
 from wavenetlike.skippp import SkipPostProcessing
+
+logger = logging.getLogger(__name__)
 
 
 class WavenetLike(torch.nn.Module):
@@ -46,6 +48,9 @@ class WavenetLike(torch.nn.Module):
             in_channels=one_conv_skip_out_channels,
             intermediate_channels=one_conv_skip_out_channels,
             out_channels=audio_channel_size)
+
+        logger.info(f'Built wavenetlike model with receptive field size of {self.receptive_field_size}')
+
 
     def forward(self, x):
         pre_x = self.pre_one_conv(x)
